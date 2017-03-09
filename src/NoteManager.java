@@ -9,16 +9,18 @@ public class NoteManager {
     private static final NoteManager INSTANCE = new NoteManager();
 
     private NoteManager() {}
+
     private HashMap<String, List<Note>> filePathToNotes = new HashMap<String, List<Note>>();
+    private HashMap<Integer, Note> noteIdToNote = new HashMap<Integer, Note>();
 
     public static NoteManager getInstance() {
         return INSTANCE;
     }
 
     public Note addNewNote(VisualPosition startPosition, VisualPosition endPosition, String highlightedCode, String content, String filePath) {
-        // TODO PERSIST!
-        // re-eval return type
+        // TODO PERSIST! + re-eval return type
         Note currentNote = new Note(startPosition, endPosition, highlightedCode, content, filePath);
+        this.noteIdToNote.put(currentNote.getId(), currentNote);
         if (!this.filePathToNotes.containsKey(filePath)) {
             this.filePathToNotes.put(filePath, new ArrayList<Note>());
         }
@@ -27,15 +29,33 @@ public class NoteManager {
     }
 
     public boolean hasNoteInLine(String filePath, int lineNum) {
+        return this.getNote(filePath, lineNum) != null;
+    }
+
+    public Note getNote(String filePath, int lineNum) {
         if (this.filePathToNotes.containsKey(filePath)) {
             List<Note> noteList = this.filePathToNotes.get(filePath);
             for (Note eachNote : noteList) {
                 if (eachNote.getLineNumber() == lineNum) {
-                    return true;
+                    return eachNote;
                 }
             }
         }
-        return false;
+        return null;
+    }
+
+    public Note getNote(int id) {
+        if (this.noteIdToNote.containsKey(id)) {
+            return this.noteIdToNote.get(id);
+        }
+        return null;
+    }
+
+    public Note editNote(int id, String content) {
+        Note note = this.getNote(id);
+        note.setContent(content);
+        // TODO persist!
+        return note;
     }
 
     public boolean hasAnyNoteInFile(String filePath) {

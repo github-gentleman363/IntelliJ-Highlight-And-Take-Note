@@ -28,7 +28,7 @@ public class TakeNoteAction extends AnAction {
         if (dialogWrapper.isOK()) {
             NoteManager manager = NoteManager.getInstance();
             String comment = dialogWrapper.getTakeNoteDialog().getText();
-            Note newNote = manager.addNewNote(startPosition, endPosition, code, comment, filePath);
+            manager.addNewNote(startPosition, endPosition, code, comment, filePath);
 
             // TODO fix duplicate annotation
             // TODO display color / icon next to where note is taken

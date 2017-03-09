@@ -40,4 +40,8 @@ public class TakeNoteDialogWrapper extends DialogWrapper {
         return takeNoteDialog;
     }
 
+    public void setContent(String content) {
+        this.takeNoteDialog.setText(content);
+    }
+
 }

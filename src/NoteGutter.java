@@ -48,7 +48,32 @@ public class NoteGutter implements ActiveAnnotationGutter {
     }
 
     public void doAction(int lineNum) {
+        // FOR NOW:
+        //  this can only be available if user has clicked to add a note
+        //  so user clicked at a line:
+        //      with a note:
+        //          show the dialog with the note, and highlight the associated code? (have ViewAddedNoteAction entity to handle this)
+        //      without a note: do nothing (for now)
         System.out.println("Note Gutter Action triggered!");
+        NoteManager noteManager = NoteManager.getInstance();
+        String filePath = project.getProjectFilePath();
+
+        if (noteManager.hasNoteInLine(filePath, lineNum)) {
+            // TODO get highlighted code info and show in the editor
+
+            // set up dialog with note info + show
+            Note note = noteManager.getNote(filePath, lineNum);
+            TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project);
+            dialogWrapper.setContent(note.getContent());
+            dialogWrapper.show();
+
+            if (dialogWrapper.isOK()) {
+                String newContent = dialogWrapper.getTakeNoteDialog().getText();
+                int noteId = note.getId();
+                noteManager.editNote(noteId, newContent);
+            }
+        }
+
     }
 
     public Cursor getCursor(int lineNum) {

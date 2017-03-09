@@ -22,4 +22,9 @@ public class TakeNoteDialog extends JDialog {
         // TODO rename
         return this.textArea.getText();
     }
+
+    public void setText(String text) {
+        this.textArea.insert(text, 0);
+    }
 }
+

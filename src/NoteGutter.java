@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.colors.ColorKey;
 import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.actions.ActiveAnnotationGutter;
+import com.intellij.ui.JBColor;
 
 import java.awt.*;
 
@@ -15,7 +16,7 @@ public class NoteGutter implements ActiveAnnotationGutter {
     }
 
     public String getLineText(int line, Editor editor) {
-        return "JIWOONG";
+        return " ";
     }
 
 
@@ -32,7 +33,11 @@ public class NoteGutter implements ActiveAnnotationGutter {
     }
 
     public Color getBgColor(int line, Editor editor) {
-        return null;
+        NoteManager noteManager = NoteManager.getInstance();
+        String filePath = project.getProjectFilePath();
+        if (noteManager.hasNoteInLine(filePath, line))
+            return JBColor.RED;
+        else return null;
     }
 
     public java.util.List<AnAction> getPopupActions(int line, Editor editor) {

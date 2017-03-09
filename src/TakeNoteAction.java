@@ -26,15 +26,15 @@ public class TakeNoteAction extends AnAction {
         dialogWrapper.show();
 
         if (dialogWrapper.isOK()) {
+            NoteManager manager = NoteManager.getInstance();
+            String comment = dialogWrapper.getTakeNoteDialog().getText();
+            Note newNote = manager.addNewNote(startPosition, endPosition, code, comment, filePath);
+
             // TODO fix duplicate annotation
             // TODO display color / icon next to where note is taken
             //      AND add action logic
             NoteGutter noteGutter = new NoteGutter(project);
             editor.getGutter().registerTextAnnotation(noteGutter, noteGutter);
-
-            NoteManager manager = NoteManager.getInstance();
-            String comment = dialogWrapper.getTakeNoteDialog().getText();
-            Note newNote = manager.addNewNote(startPosition, endPosition, code, comment, filePath);
         }
     }
 }

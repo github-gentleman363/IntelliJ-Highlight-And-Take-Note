@@ -21,4 +21,12 @@ public class Note {
         this.content = content;
         this.filePath = filePath;
     }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
 }

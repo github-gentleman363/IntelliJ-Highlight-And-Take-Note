@@ -23,7 +23,7 @@ public class TakeNoteAction extends AnAction {
         final String filePath = project.getProjectFilePath();
 
         // TODO set position & size
-        TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project, "Add Note");
+        TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project, true);
         dialogWrapper.show();
 
         if (dialogWrapper.isOK()) {

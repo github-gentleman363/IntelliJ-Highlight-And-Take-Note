@@ -65,4 +65,21 @@ public class NoteManager {
                 && this.filePathToNotes.get(filePath) != null
                 && this.filePathToNotes.get(filePath).size() > 0;
     }
+
+    public boolean deleteNote(String filePath, int lineNum) {
+        Note noteToRemove = null;
+        if (this.hasAnyNoteInFile(filePath)) {
+            List<Note> listOfNotes = this.getFilePathToNotes().get(filePath);
+            for (Note note : listOfNotes) {
+                if (note.getLineNumber() == lineNum) {
+                    noteToRemove = note;
+                    break;
+                }
+            }
+            if (noteToRemove != null) {
+                this.getFilePathToNotes().get(filePath).remove(noteToRemove);
+            }
+        }
+        return false;
+    }
 }

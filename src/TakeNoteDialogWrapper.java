@@ -1,15 +1,22 @@
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class TakeNoteDialogWrapper extends DialogWrapper {
     private TakeNoteDialog takeNoteDialog;
 
-    public TakeNoteDialogWrapper(Project project, String title) {
+    private static final int DELETE_NOTE_EXIT_CODE = NEXT_USER_EXIT_CODE;
+
+    private boolean isAddMode;     // view/edit mode if false
+
+    public TakeNoteDialogWrapper(Project project, boolean isAddMode) {
         super(project);
         this.takeNoteDialog = new TakeNoteDialog();
-        this.setTitle(title);
+        this.isAddMode = isAddMode;
+        this.setTitle(this.isAddMode ? "Add Note" : "View / Edit Note");
         this.init();
         // TODO disable submit button if no text is inputted
         //        this.setOKActionEnabled(false);
@@ -19,6 +26,10 @@ public class TakeNoteDialogWrapper extends DialogWrapper {
         //                setOKActionEnabled(!"".equals(((JTextField)e.getComponent()).getText()));
         //            }
         //        });
+        if (this.isAddMode) {
+            this.getButton(this.getCancelAction()).setVisible(false);
+        }
+        this.setOKButtonText("Save");
     }
 
     @Override
@@ -34,6 +45,29 @@ public class TakeNoteDialogWrapper extends DialogWrapper {
     @Override
     protected JComponent createCenterPanel() {
         return this.takeNoteDialog.getPanel();
+    }
+
+    @Override
+    @NotNull
+    protected Action[] createActions() {
+        if (this.isAddMode)
+            return super.createActions();
+        return new Action[]{getOKAction(), new DeleteNoteAction(), getHelpAction()};
+    }
+
+    protected class DeleteNoteAction extends DialogWrapperAction {
+        private DeleteNoteAction() {
+            super("Delete Note");
+        }
+
+        @Override
+        protected void doAction(ActionEvent e) {
+            close(DELETE_NOTE_EXIT_CODE);
+        }
+    }
+
+    public boolean isDeleteNoteOnExit() {
+        return getExitCode() == DELETE_NOTE_EXIT_CODE;
     }
 
     public TakeNoteDialog getTakeNoteDialog() {

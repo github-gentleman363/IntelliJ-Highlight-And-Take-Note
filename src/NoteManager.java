@@ -56,6 +56,10 @@ public class NoteManager {
         return note;
     }
 
+    public HashMap<String, List<Note>> getFilePathToNotes() {
+        return filePathToNotes;
+    }
+
     public boolean hasAnyNoteInFile(String filePath) {
         return this.filePathToNotes.containsKey(filePath)
                 && this.filePathToNotes.get(filePath) != null

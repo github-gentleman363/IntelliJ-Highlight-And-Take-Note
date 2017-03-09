@@ -13,9 +13,7 @@ import java.awt.*;
  */
 public class NoteGutter implements ActiveAnnotationGutter {
 
-    public NoteGutter() {
-
-    }
+    public NoteGutter() {}
 
     public String getLineText(int line, Editor editor) {
         return "JIWOONG";

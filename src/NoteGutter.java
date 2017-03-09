@@ -33,9 +33,7 @@ public class NoteGutter implements ActiveAnnotationGutter {
     }
 
     public Color getBgColor(int line, Editor editor) {
-        NoteManager noteManager = NoteManager.getInstance();
-        String filePath = project.getProjectFilePath();
-        if (noteManager.hasNoteInLine(filePath, line))
+        if (this.hasNote(line))
             return JBColor.RED;
         else return null;
     }
@@ -77,7 +75,13 @@ public class NoteGutter implements ActiveAnnotationGutter {
     }
 
     public Cursor getCursor(int lineNum) {
-        return null;
+        return this.hasNote(lineNum) ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) : null;
+    }
+
+    private boolean hasNote(int lineNum) {
+        NoteManager noteManager = NoteManager.getInstance();
+        String filePath = project.getProjectFilePath();
+        return noteManager.hasNoteInLine(filePath, lineNum);
     }
 
 }

@@ -36,7 +36,7 @@ public class TakeNoteAction extends AnAction {
             if (manager.hasAnyNoteInFile(filePath)) {
                 editor.getGutter().closeAllAnnotations();
             }
-            NoteGutter noteGutter = new NoteGutter(project, editor);
+            NoteGutter noteGutter = new NoteGutter(project);
             editor.getGutter().registerTextAnnotation(noteGutter, noteGutter);
         }
     }

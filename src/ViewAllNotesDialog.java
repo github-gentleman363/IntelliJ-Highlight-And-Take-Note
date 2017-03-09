@@ -34,14 +34,14 @@ public class ViewAllNotesDialog extends JDialog {
 
     }
 
-//    private void onOK() {
-//        // add your code here
-//        dispose();
-//    }
-//
-//    private void onCancel() {
-//        // add your code here if necessary
-//        dispose();
-//    }
+    private void onOK() {
+        // add your code here
+        dispose();
+    }
+
+    private void onCancel() {
+        // add your code here if necessary
+        dispose();
+    }
 
 }

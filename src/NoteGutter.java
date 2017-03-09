@@ -2,18 +2,17 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.ColorKey;
 import com.intellij.openapi.editor.colors.EditorFontType;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.actions.ActiveAnnotationGutter;
 
 import java.awt.*;
 
-
-/**
- * Created by erikayoon on 3/8/17.
- *
- */
 public class NoteGutter implements ActiveAnnotationGutter {
+    private final Project project;
 
-    public NoteGutter() {}
+    public NoteGutter(Project project) {
+        this.project = project;
+    }
 
     public String getLineText(int line, Editor editor) {
         return "JIWOONG";
@@ -41,7 +40,6 @@ public class NoteGutter implements ActiveAnnotationGutter {
     }
 
     public void gutterClosed() {
-        return;
     }
 
     public void doAction(int lineNum) {

@@ -33,7 +33,10 @@ public class TakeNoteAction extends AnAction {
             // TODO fix duplicate annotation
             // TODO display color / icon next to where note is taken
             //      AND add action logic
-            NoteGutter noteGutter = new NoteGutter(project);
+            if (manager.hasAnyNoteInFile(filePath)) {
+                editor.getGutter().closeAllAnnotations();
+            }
+            NoteGutter noteGutter = new NoteGutter(project, editor);
             editor.getGutter().registerTextAnnotation(noteGutter, noteGutter);
         }
     }

@@ -37,4 +37,10 @@ public class NoteManager {
         }
         return false;
     }
+
+    public boolean hasAnyNoteInFile(String filePath) {
+        return this.filePathToNotes.containsKey(filePath)
+                && this.filePathToNotes.get(filePath) != null
+                && this.filePathToNotes.get(filePath).size() > 0;
+    }
 }

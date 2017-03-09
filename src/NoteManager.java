@@ -1,5 +1,3 @@
-import com.intellij.openapi.editor.VisualPosition;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +15,9 @@ public class NoteManager {
         return INSTANCE;
     }
 
-    public Note addNewNote(VisualPosition startPosition, VisualPosition endPosition, String highlightedCode, String content, String filePath) {
+    public Note addNewNote(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode) {
         // TODO PERSIST! + re-eval return type
-        Note currentNote = new Note(startPosition, endPosition, highlightedCode, content, filePath);
+        Note currentNote = new Note(startOffset, endOffset, lineNumber, content, filePath, highlightedCode);
         this.noteIdToNote.put(currentNote.getId(), currentNote);
         if (!this.filePathToNotes.containsKey(filePath)) {
             this.filePathToNotes.put(filePath, new ArrayList<Note>());

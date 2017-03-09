@@ -6,10 +6,10 @@ import javax.swing.*;
 public class TakeNoteDialogWrapper extends DialogWrapper {
     private TakeNoteDialog takeNoteDialog;
 
-    public TakeNoteDialogWrapper(Project project) {
+    public TakeNoteDialogWrapper(Project project, String title) {
         super(project);
         this.takeNoteDialog = new TakeNoteDialog();
-        this.setTitle("Add Note");
+        this.setTitle(title);
         this.init();
         // TODO disable submit button if no text is inputted
         //        this.setOKActionEnabled(false);

@@ -1,5 +1,6 @@
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.editor.colors.ColorKey;
 import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.project.Project;
@@ -10,9 +11,11 @@ import java.awt.*;
 
 public class NoteGutter implements ActiveAnnotationGutter {
     private final Project project;
+    private final Editor editor;
 
-    public NoteGutter(Project project) {
+    public NoteGutter(Project project, Editor editor) {
         this.project = project;
+        this.editor = editor;
     }
 
     public String getLineText(int line, Editor editor) {
@@ -57,11 +60,15 @@ public class NoteGutter implements ActiveAnnotationGutter {
         String filePath = project.getProjectFilePath();
 
         if (noteManager.hasNoteInLine(filePath, lineNum)) {
-            // TODO get highlighted code info and show in the editor
+            Note note = noteManager.getNote(filePath, lineNum);
+            //  TODO handle if code in the editor in the range doesn't match what's in note
+            int startOffset = note.getStartOffset();
+            int endOffset = note.getEndOffset();
+            final SelectionModel selectionModel = editor.getSelectionModel();
+            selectionModel.setSelection(startOffset, endOffset);
 
             // set up dialog with note info + show
-            Note note = noteManager.getNote(filePath, lineNum);
-            TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project);
+            TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project, "Edit Note");
             dialogWrapper.setContent(note.getContent());
             dialogWrapper.show();
 
@@ -69,7 +76,9 @@ public class NoteGutter implements ActiveAnnotationGutter {
                 String newContent = dialogWrapper.getTakeNoteDialog().getText();
                 int noteId = note.getId();
                 noteManager.editNote(noteId, newContent);
+                selectionModel.removeSelection();
             }
+            // TODO removeSelection when user cancels editing
         }
 
     }

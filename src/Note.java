@@ -1,13 +1,11 @@
-import com.intellij.openapi.editor.VisualPosition;
-
 public class Note {
 
     private static int nextId = 1;
 
     private int id;
     private int lineNumber;
-    private VisualPosition startPosition;
-    private VisualPosition endPosition;
+    private int startOffset;
+    private int endOffset;
     private String highlightedCode;
     private String content;
     private String filePath;
@@ -20,8 +18,12 @@ public class Note {
         return lineNumber;
     }
 
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
+    public int getStartOffset() {
+        return startOffset;
+    }
+
+    public int getEndOffset() {
+        return endOffset;
     }
 
     public String getContent() {
@@ -32,11 +34,15 @@ public class Note {
         this.content = content;
     }
 
-    public Note(VisualPosition startPosition, VisualPosition endPosition, String highlightedCode, String content, String filePath) {
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public Note(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode) {
         this.id = Note.nextId++;
-        this.lineNumber = startPosition.getLine();
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
+        this.lineNumber = lineNumber;
+        this.startOffset = startOffset;
+        this.endOffset = endOffset;
         this.highlightedCode = highlightedCode;
         this.content = content;
         this.filePath = filePath;

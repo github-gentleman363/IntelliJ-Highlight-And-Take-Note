@@ -1,6 +1,10 @@
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
+
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.*;
@@ -14,7 +18,10 @@ public class ViewAllNotesDialog extends JDialog {
     private JTextPane codePane;
     private JTextPane notePane;
 
-    public ViewAllNotesDialog() {
+    private Project project;
+
+    public ViewAllNotesDialog(Project project) {
+        this.project = project;
         setContentPane(contentPane);
         setModal(true);
 //        getRootPane().setDefaultButton(buttonOK);
@@ -45,7 +52,10 @@ public class ViewAllNotesDialog extends JDialog {
         Set<String> filePathSet = filePathToNotes.keySet();
         for (String filePath : filePathSet) {
             List<Note> notes = filePathToNotes.get(filePath);
-            DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(filePath);
+            DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(
+                    VfsUtil.getRelativeLocation(LocalFileSystem.getInstance().findFileByPath(filePath),
+                            project.getBaseDir())
+            );
             root.add(parentNode);
 
             for (Note note : notes) {
@@ -58,35 +68,39 @@ public class ViewAllNotesDialog extends JDialog {
         this.notesTree.setModel(treeModel);
         this.notesTree.setCellRenderer(new NoteCellRenderer());
 
-        // TODO refactor me!
-        this.notesTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) notesTree.getLastSelectedPathComponent();
-                // get corresponding note
-                // and display the following details on the right:
-                //      associated code (highlighted code) at the top
-                //      note content at the bottom
-
-                if (selectedNode == null || !selectedNode.isLeaf()) {
-                    return;
-                }
-
-                Note currentNote = (Note) selectedNode.getUserObject();
-
-                new Thread(new Runnable() {
-                    public void run() {
-                        // Runs inside of the Swing UI thread
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                codePane.setText(currentNote.getHighlightedCode());
-                                notePane.setText(currentNote.getContent());
-                            }
-                        });
+        MouseListener ml = new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                int selRow = notesTree.getRowForLocation(e.getX(), e.getY());
+                if (selRow != -1) {
+                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) notesTree.getLastSelectedPathComponent();
+                    if (selectedNode == null || !selectedNode.isLeaf()) {
+                        return;
                     }
-                }).start();
+
+                    Note currentNote = (Note) selectedNode.getUserObject();
+
+                    // single-click
+                    if (e.getClickCount() == 1) {
+                        new Thread(new Runnable() {
+                            public void run() {
+                                // Runs inside of the Swing UI thread
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    public void run() {
+                                        codePane.setText(currentNote.getHighlightedCode());
+                                        notePane.setText(currentNote.getContent());
+                                    }
+                                });
+                            }
+                        }).start();
+                    } else if (e.getClickCount() == 2) {
+                        VirtualFile file = LocalFileSystem.getInstance().findFileByPath(currentNote.getFilePath());
+                        if (file == null) return;
+                        new OpenFileDescriptor(project, file, currentNote.getStartOffset()).navigate(true);
+                    }
+                }
             }
-        });
+        };
+        this.notesTree.addMouseListener(ml);
     }
 
     public JComponent getPreferredFocusedComponent() {

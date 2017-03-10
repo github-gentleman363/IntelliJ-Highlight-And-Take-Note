@@ -8,7 +8,7 @@ public class ViewAllNotesDialogWrapper extends DialogWrapper {
 
     public ViewAllNotesDialogWrapper(Project project) {
         super(project);
-        this.viewAllNotesDialog = new ViewAllNotesDialog();
+        this.viewAllNotesDialog = new ViewAllNotesDialog(project);
         this.setTitle("Find All Notes");
         this.init();
         this.getButton(this.getCancelAction()).setVisible(false);

@@ -19,11 +19,14 @@ public class TakeNoteAction extends AnAction {
         final SelectionModel selectionModel = editor.getSelectionModel();
         final int startOffset = selectionModel.getSelectionStart();
         final int endOffset = selectionModel.getSelectionEnd();
+        if (selectionModel.getSelectionStartPosition() == null) return;
         final int lineNumber = selectionModel.getSelectionStartPosition().getLine();
 
         String code = selectionModel.getSelectedText();
         Document document = editor.getDocument();
         VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
+        if (virtualFile == null) return;
+
         final String filePath = virtualFile.getPath();
 
         // TODO set position & size

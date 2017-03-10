@@ -18,6 +18,7 @@ public class Note {
         return lineNumber;
     }
 
+
     public int getStartOffset() {
         return startOffset;
     }
@@ -51,6 +52,4 @@ public class Note {
         this.content = content;
         this.filePath = filePath;
     }
-
-
 }

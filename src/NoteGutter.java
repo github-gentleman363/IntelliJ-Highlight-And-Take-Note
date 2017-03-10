@@ -58,13 +58,16 @@ public class NoteGutter implements ActiveAnnotationGutter {
         //      with a note:
         //          show the dialog with the note, and highlight the associated code? (have ViewAddedNoteAction entity to handle this)
         //      without a note: do nothing (for now)
-
         // System.out.println("Note Gutter Action triggered!");
         NoteManager noteManager = NoteManager.getInstance();
-        String filePath = project.getProjectFilePath();
 
-        if (this.hasNote(lineNum)) {
-            Note note = noteManager.getNote(filePath, lineNum);
+        // TODO refactor
+        Document document = this.editor.getDocument();
+        VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
+        final String filePath = virtualFile.getPath();
+
+        Note note = noteManager.getNote(filePath, lineNum);
+        if (note != null) {
             //  TODO handle if code in the editor in the range doesn't match what's in note
             int startOffset = note.getStartOffset();
             int endOffset = note.getEndOffset();
@@ -89,11 +92,14 @@ public class NoteGutter implements ActiveAnnotationGutter {
                     editor.getGutter().registerTextAnnotation(noteGutter, noteGutter);
                 }
             }
-
-            selectionModel.removeSelection();
         }
 
     }
+
+
+    // TODO
+    // hasNote isn't that useful since we need the Note object in DoAction
+    // try replacing it with 'getNote' instead?
 
     public Cursor getCursor(int lineNum) {
         return this.hasNote(lineNum) ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) : null;

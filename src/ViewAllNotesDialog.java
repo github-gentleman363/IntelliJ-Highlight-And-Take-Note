@@ -26,7 +26,6 @@ public class ViewAllNotesDialog extends JDialog {
         setContentPane(contentPane);
         setModal(true);
 
-//        codePane.setForeground(Color.red);
 //        getRootPane().setDefaultButton(buttonOK);
 
         // call onCancel() when cross is clicked
@@ -81,6 +80,7 @@ public class ViewAllNotesDialog extends JDialog {
                     }
 
                     Note currentNote = (Note) selectedNode.getUserObject();
+                    notePane.setBackground(currentNote.getColor());
 
                     if (e.getClickCount() == 1) {
                         new Thread(new Runnable() {

@@ -1,14 +1,14 @@
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.project.Project;
 
 public class ViewAllNotesAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        // TODO: insert action logic here
-        ViewAllNotesDialog viewAllNotesDialog = new ViewAllNotesDialog();
-        viewAllNotesDialog.show();
-
-//        if (viewAllNotesDialog.isOK()) {
+        Project project = e.getRequiredData(CommonDataKeys.PROJECT);
+        ViewAllNotesDialogWrapper viewAllNotesDialogWrapper = new ViewAllNotesDialogWrapper(project);
+        viewAllNotesDialogWrapper.show();
     }
 }

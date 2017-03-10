@@ -1,12 +1,8 @@
-import com.intellij.ui.components.JBScrollPane;
-import com.intellij.ui.treeStructure.Tree;
-
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.*;
@@ -41,8 +37,6 @@ public class ViewAllNotesDialog extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         this.constructTree();
-        this.setTitle("Find all notes");
-
     }
 
     private void constructTree() {
@@ -94,7 +88,13 @@ public class ViewAllNotesDialog extends JDialog {
         });
     }
 
+    public JComponent getPreferredFocusedComponent() {
+        return this.NotesTree;
+    }
 
+    public JComponent getPanel() {
+        return this.contentPane;
+    }
 
     private void onOK() {
         // add your code here

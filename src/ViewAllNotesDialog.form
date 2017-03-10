@@ -13,7 +13,7 @@
       <component id="f9f09" class="javax.swing.JTree" binding="notesTree">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="600" height="300"/>
+            <preferred-size width="400" height="300"/>
           </grid>
         </constraints>
         <properties>
@@ -34,7 +34,7 @@
           <component id="b132" class="javax.swing.JTextPane" binding="notePane">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <preferred-size width="300" height="150"/>
+                <preferred-size width="400" height="150"/>
               </grid>
             </constraints>
             <properties>
@@ -48,7 +48,7 @@
           <component id="986ff" class="javax.swing.JTextPane" binding="codePane">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <preferred-size width="300" height="150"/>
+                <preferred-size width="400" height="150"/>
               </grid>
             </constraints>
             <properties>

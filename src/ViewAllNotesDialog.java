@@ -11,6 +11,7 @@ import java.awt.event.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.awt.*;
 
 public class ViewAllNotesDialog extends JDialog {
     private JPanel contentPane;
@@ -24,6 +25,8 @@ public class ViewAllNotesDialog extends JDialog {
         this.project = project;
         setContentPane(contentPane);
         setModal(true);
+
+//        codePane.setForeground(Color.red);
 //        getRootPane().setDefaultButton(buttonOK);
 
         // call onCancel() when cross is clicked

@@ -1,10 +1,13 @@
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.editor.colors.ColorKey;
 import com.intellij.openapi.editor.colors.EditorFontType;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.actions.ActiveAnnotationGutter;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.JBColor;
 
 import java.awt.*;
@@ -98,7 +101,9 @@ public class NoteGutter implements ActiveAnnotationGutter {
 
     private boolean hasNote(int lineNum) {
         NoteManager noteManager = NoteManager.getInstance();
-        String filePath = project.getProjectFilePath();
+        Document document = this.editor.getDocument();
+        VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
+        final String filePath = virtualFile.getPath();
         return noteManager.hasNoteInLine(filePath, lineNum);
     }
 

@@ -38,6 +38,10 @@ public class Note {
         return filePath;
     }
 
+    public String getHighlightedCode() {
+        return highlightedCode;
+    }
+
     public Note(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode) {
         this.id = Note.nextId++;
         this.lineNumber = lineNumber;

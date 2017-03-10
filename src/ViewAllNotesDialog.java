@@ -90,6 +90,11 @@ public class ViewAllNotesDialog extends JDialog {
 
                     Note currentNote = (Note) selectedNode.getUserObject();
                     notePane.setBackground(currentNote.getColor());
+                    if(currentNote.getColor() == Color.YELLOW){
+                        notePane.setForeground(Color.BLACK);
+                    } else {
+                        notePane.setForeground(Color.WHITE);
+                    }
 
                     if (e.getClickCount() == 1) {
                         new Thread(new Runnable() {

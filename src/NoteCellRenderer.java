@@ -10,6 +10,7 @@ import java.awt.*;
 public class NoteCellRenderer implements TreeCellRenderer {
     private JLabel lineNumber = new JLabel();
     private JLabel noteContent = new JLabel();
+    private JLabel filePath = new JLabel();
 
     private JPanel panel = new JPanel();
 
@@ -18,11 +19,18 @@ public class NoteCellRenderer implements TreeCellRenderer {
     private Color backgroundSelectionColor;
     private Color backgroundNonSelectionColor;
 
-    public NoteCellRenderer() {
+    private boolean includeFilePath;
+
+    public NoteCellRenderer(boolean includeFilePath) {
 
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = JBUI.insets(0, 0, 0, 10);
+
+        this.includeFilePath = includeFilePath;
+        if (includeFilePath) {
+            panel.add(filePath, gbc);
+        }
 
         panel.add(lineNumber, gbc);
         lineNumber.setForeground(JBColor.GRAY);
@@ -35,6 +43,7 @@ public class NoteCellRenderer implements TreeCellRenderer {
 
         backgroundSelectionColor = defaultRenderer.getBackgroundSelectionColor();
         backgroundNonSelectionColor = defaultRenderer.getBackgroundNonSelectionColor();
+
     }
 
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected,
@@ -44,6 +53,10 @@ public class NoteCellRenderer implements TreeCellRenderer {
             Object userObject = ((DefaultMutableTreeNode) value).getUserObject(); // TODO pass in Note object
             if (userObject instanceof Note) {
                 Note note = (Note) userObject;
+                if (includeFilePath) {
+                    String[] chars = note.getFilePath().split("/");
+                    filePath.setText(chars[chars.length-1]);
+                }
                 lineNumber.setText(((Integer) note.getLineNumber()).toString());
                 noteContent.setText(note.getContent());
                 if (selected) {

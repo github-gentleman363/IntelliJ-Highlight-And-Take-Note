@@ -1,4 +1,5 @@
 import com.intellij.ui.JBColor;
+import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -21,7 +22,7 @@ public class NoteCellRenderer implements TreeCellRenderer {
 
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 0, 0, 10);
+        gbc.insets = JBUI.insets(0, 0, 0, 10);
 
         panel.add(lineNumber, gbc);
         lineNumber.setForeground(JBColor.GRAY);

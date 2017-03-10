@@ -1,8 +1,6 @@
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.*;
@@ -75,16 +73,18 @@ public class ViewAllNotesDialog extends JDialog {
                 }
 
                 Note currentNote = (Note) selectedNode.getUserObject();
-                codePane = new JTextPane();
-                Document doc = codePane.getDocument();
-                
-                try {
-                    doc.insertString(0, currentNote.getHighlightedCode(), null);
-                    System.out.println(currentNote.getHighlightedCode());
-                } catch (BadLocationException ble) {
-                    System.err.println("Couldn't insert initial text into text pane.");
-                }
 
+                new Thread(new Runnable() {
+                    public void run() {
+                        // Runs inside of the Swing UI thread
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                codePane.setText(currentNote.getHighlightedCode());
+                                notePane.setText(currentNote.getContent());
+                            }
+                        });
+                    }
+                }).start();
             }
         });
     }

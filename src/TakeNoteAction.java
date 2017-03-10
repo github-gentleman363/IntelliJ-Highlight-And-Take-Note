@@ -13,6 +13,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.messages.MessageBus;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
+
 
 public class TakeNoteAction extends AnAction {
 
@@ -50,9 +52,12 @@ public class TakeNoteAction extends AnAction {
 
         if (dialogWrapper.isOK()) {
             NoteManager manager = NoteManager.getInstance();
-            String comment = dialogWrapper.getTakeNoteDialog().getText();
+            TakeNoteDialog takeNoteDialog = dialogWrapper.getTakeNoteDialog();
+            String comment = takeNoteDialog.getText();
 
-            manager.addNewNote(startOffset, endOffset, lineNumber, comment, filePath, code);
+            Color color = takeNoteDialog.getSelectedColor();
+
+            manager.addNewNote(startOffset, endOffset, lineNumber, comment, filePath, code, color);
 
             // TODO fix duplicate annotation
             // TODO display color / icon next to where note is taken

@@ -1,23 +1,26 @@
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.*;
 
 
 public class TakeNoteDialog extends JDialog {
     private JPanel contentPane;
     private JTextArea textArea;
     private JRadioButton redButton;
-    private JRadioButton purpleButton;
+    private JRadioButton yellowButton;
     private JRadioButton greenButton;
     private JRadioButton blueButton;
+    private ButtonGroup buttonGroup;
+
+    // TODO disallow multiple selection
 
     public TakeNoteDialog() {
         // TODO add selected text as props
         setContentPane(this.contentPane);
         setModal(true);
 
-        ButtonGroup chooseColor = new ButtonGroup();
+        ButtonGroup chooseColor = this.buttonGroup = new ButtonGroup();
         chooseColor.add(redButton);
-        chooseColor.add(purpleButton);
+        chooseColor.add(yellowButton);
         chooseColor.add(greenButton);
         chooseColor.add(blueButton);
     }
@@ -38,5 +41,20 @@ public class TakeNoteDialog extends JDialog {
     public void setText(String text) {
         this.textArea.insert(text, 0);
     }
+
+    public Color getSelectedColor() {
+        if (redButton.isSelected()) {
+            return Color.RED;
+        } else if (yellowButton.isSelected()) {
+            return Color.YELLOW;
+        } else if (greenButton.isSelected()) {
+            return Color.GREEN;
+        } else if (blueButton.isSelected()) {
+            return Color.BLUE;
+        } else {
+            return null;
+        }
+    }
+
 }
 

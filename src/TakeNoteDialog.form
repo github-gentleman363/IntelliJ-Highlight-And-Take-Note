@@ -5,7 +5,9 @@
     <constraints>
       <xy x="48" y="54" width="529" height="297"/>
     </constraints>
-    <properties/>
+    <properties>
+      <enabled value="true"/>
+    </properties>
     <border type="none"/>
     <children>
       <grid id="e3588" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -13,7 +15,9 @@
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <enabled value="true"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="1294f" class="javax.swing.JTextArea" binding="textArea" default-binding="true">
@@ -26,20 +30,13 @@
           </component>
         </children>
       </grid>
-      <component id="73455" class="javax.swing.JRadioButton" binding="redButton">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Red"/>
-        </properties>
-      </component>
-      <component id="1af28" class="javax.swing.JRadioButton" binding="purpleButton">
+      <component id="1af28" class="javax.swing.JRadioButton" binding="yellowButton">
         <constraints>
           <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Purple"/>
+          <foreground color="-4605109"/>
+          <text value="Yellow"/>
         </properties>
       </component>
       <component id="bf026" class="javax.swing.JRadioButton" binding="greenButton">
@@ -47,6 +44,7 @@
           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <foreground color="-10831003"/>
           <text value="Green"/>
         </properties>
       </component>
@@ -55,7 +53,17 @@
           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <foreground color="-12493637"/>
           <text value="Blue"/>
+        </properties>
+      </component>
+      <component id="4b2d5" class="javax.swing.JRadioButton" binding="redButton">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-4514537"/>
+          <text value="Red"/>
         </properties>
       </component>
     </children>

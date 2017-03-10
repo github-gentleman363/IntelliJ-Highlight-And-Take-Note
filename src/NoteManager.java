@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,9 +16,9 @@ public class NoteManager {
         return INSTANCE;
     }
 
-    public Note addNewNote(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode) {
+    public Note addNewNote(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {
         // TODO PERSIST! + re-eval return type
-        Note currentNote = new Note(startOffset, endOffset, lineNumber, content, filePath, highlightedCode);
+        Note currentNote = new Note(startOffset, endOffset, lineNumber, content, filePath, highlightedCode, color);
 
         this.noteIdToNote.put(currentNote.getId(), currentNote);
         if (!this.filePathToNotes.containsKey(filePath)) {

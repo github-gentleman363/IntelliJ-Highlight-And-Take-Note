@@ -27,14 +27,19 @@ public class NoteGutter implements ActiveAnnotationGutter {
 
     public String getToolTip(int line, Editor editor) {
         String showComment;
+
         Document document = this.editor.getDocument();
         VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
         final String filePath = virtualFile.getPath();
 
         NoteManager noteManager = NoteManager.getInstance();
         Note note = noteManager.getNote(filePath, line);
-        if (note == null) { showComment = "Comment"; }
-        else { showComment = note.getContent(); }
+        if (note == null) {
+            showComment = "Comment";
+        }
+        else {
+            showComment = note.getContent();
+        }
         return showComment;
     }
 
@@ -47,8 +52,15 @@ public class NoteGutter implements ActiveAnnotationGutter {
     }
 
     public Color getBgColor(int line, Editor editor) {
-        if (this.hasNote(line))
-            return JBColor.RED;
+        if (this.hasNote(line)) {
+            NoteManager noteManager = NoteManager.getInstance();
+            Document document = this.editor.getDocument();
+            VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
+            final String filePath = virtualFile.getPath();
+
+            Note note = noteManager.getNote(filePath, line);
+            return note.getColor();
+        }
         else return null;
     }
 

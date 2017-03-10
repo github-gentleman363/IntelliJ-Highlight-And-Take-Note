@@ -36,7 +36,7 @@
         </constraints>
         <properties>
           <font style="1"/>
-          <foreground color="-4605109"/>
+          <foreground color="-256"/>
           <text value="Yellow"/>
         </properties>
       </component>
@@ -46,7 +46,7 @@
         </constraints>
         <properties>
           <font style="1"/>
-          <foreground color="-10831003"/>
+          <foreground color="-16711936"/>
           <text value="Green"/>
         </properties>
       </component>
@@ -56,7 +56,7 @@
         </constraints>
         <properties>
           <font style="1"/>
-          <foreground color="-12493637"/>
+          <foreground color="-16776961"/>
           <text value="Blue"/>
         </properties>
       </component>
@@ -66,7 +66,7 @@
         </constraints>
         <properties>
           <font style="1"/>
-          <foreground color="-4514537"/>
+          <foreground color="-65536"/>
           <selected value="true"/>
           <text value="Red"/>
         </properties>

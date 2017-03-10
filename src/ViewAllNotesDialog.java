@@ -79,7 +79,6 @@ public class ViewAllNotesDialog extends JDialog {
 
                     Note currentNote = (Note) selectedNode.getUserObject();
 
-                    // single-click
                     if (e.getClickCount() == 1) {
                         new Thread(new Runnable() {
                             public void run() {

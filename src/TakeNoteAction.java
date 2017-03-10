@@ -5,8 +5,13 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.FileEditorManagerAdapter;
+import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.messages.MessageBus;
+import org.jetbrains.annotations.NotNull;
 
 
 public class TakeNoteAction extends AnAction {
@@ -15,6 +20,16 @@ public class TakeNoteAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         final Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
         final Project project = e.getRequiredData(CommonDataKeys.PROJECT);
+
+        MessageBus messageBus = project.getMessageBus();
+        messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerAdapter() {
+            @Override
+            public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+                super.fileOpened(source, file);
+                NoteGutter noteGutter = new NoteGutter(project, source.getSelectedTextEditor());
+                source.getSelectedTextEditor().getGutter().registerTextAnnotation(noteGutter, noteGutter);
+            }
+        });
 
         final SelectionModel selectionModel = editor.getSelectionModel();
         final int startOffset = selectionModel.getSelectionStart();

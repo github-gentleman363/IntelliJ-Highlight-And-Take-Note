@@ -25,9 +25,16 @@ public class NoteGutter implements ActiveAnnotationGutter {
         return " ";
     }
 
-
     public String getToolTip(int line, Editor editor) {
-        return "blah";
+        String showComment;
+        Document document = this.editor.getDocument();
+        VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
+        final String filePath = virtualFile.getPath();
+
+        NoteManager noteManager = NoteManager.getInstance();
+        Note note = noteManager.getNote(filePath, line);
+        showComment = note.getContent();
+        return showComment;
     }
 
     public EditorFontType getStyle(int line, Editor editor) {

@@ -1,3 +1,5 @@
+import com.intellij.ui.JBColor;
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -5,29 +7,38 @@ import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 
 public class NoteCellRenderer implements TreeCellRenderer {
-    JLabel lineNumber = new JLabel(" ");
+    private JLabel lineNumber = new JLabel();
+    private JLabel noteContent = new JLabel();
 
-    JLabel noteContent = new JLabel("");
+    private JPanel panel = new JPanel();
 
-    JPanel renderer = new JPanel();
+    private DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
 
-    DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
-
-    Color backgroundSelectionColor;
-
-    Color backgroundNonSelectionColor;
-
+    private Color backgroundSelectionColor;
+    private Color backgroundNonSelectionColor;
 
     public NoteCellRenderer() {
-        renderer.add(lineNumber);
-        renderer.add(noteContent);
+
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 0, 0, 10);
+
+        panel.add(lineNumber, gbc);
+        lineNumber.setForeground(JBColor.GRAY);
+        lineNumber.setVerticalTextPosition(JLabel.CENTER);
+        lineNumber.setVerticalAlignment(JLabel.CENTER);
+
+        panel.add(noteContent, gbc);
+        noteContent.setVerticalTextPosition(JLabel.CENTER);
+        noteContent.setVerticalAlignment(JLabel.CENTER);
+
         backgroundSelectionColor = defaultRenderer.getBackgroundSelectionColor();
         backgroundNonSelectionColor = defaultRenderer.getBackgroundNonSelectionColor();
     }
 
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected,
                                                   boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        Component returnValue = null;
+        Component rendererComponent = null;
         if ((value != null) && (value instanceof DefaultMutableTreeNode)) {
             Object userObject = ((DefaultMutableTreeNode) value).getUserObject(); // TODO pass in Note object
             if (userObject instanceof Note) {
@@ -35,18 +46,18 @@ public class NoteCellRenderer implements TreeCellRenderer {
                 lineNumber.setText(((Integer) note.getLineNumber()).toString());
                 noteContent.setText(note.getContent());
                 if (selected) {
-                    renderer.setBackground(backgroundSelectionColor);
+                    panel.setBackground(backgroundSelectionColor);
                 } else {
-                    renderer.setBackground(backgroundNonSelectionColor);
+                    panel.setBackground(backgroundNonSelectionColor);
                 }
-                renderer.setEnabled(tree.isEnabled());
-                returnValue = renderer;
+                panel.setEnabled(tree.isEnabled());
+                rendererComponent = panel;
             }
         }
-        if (returnValue == null) {
-            returnValue = defaultRenderer.getTreeCellRendererComponent(tree, value, selected, expanded,
+        if (rendererComponent == null) {
+            rendererComponent = defaultRenderer.getTreeCellRendererComponent(tree, value, selected, expanded,
                     leaf, row, hasFocus);
         }
-        return returnValue;
+        return rendererComponent;
     }
 }

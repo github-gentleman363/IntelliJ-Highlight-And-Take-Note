@@ -8,13 +8,15 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="f9f09" class="javax.swing.JTree" binding="NotesTree">
+      <component id="f9f09" class="javax.swing.JTree" binding="notesTree">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="600" height="300"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <rootVisible value="false"/>
+        </properties>
       </component>
       <grid id="25999" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>

@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class ViewAllNotesDialog extends JDialog {
     private JPanel contentPane;
-    private JTree NotesTree;
+    private JTree notesTree;
     private JTextPane codePane;
     private JTextPane notePane;
 
@@ -57,15 +57,14 @@ public class ViewAllNotesDialog extends JDialog {
         }
 
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
-        this.NotesTree.setModel(treeModel);
-        this.NotesTree.setRootVisible(false);
-        this.NotesTree.setCellRenderer(new NoteCellRenderer());
+        this.notesTree.setModel(treeModel);
+        this.notesTree.setCellRenderer(new NoteCellRenderer());
 
         // TODO refactor me!
-        this.NotesTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
+        this.notesTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) NotesTree.getLastSelectedPathComponent();
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) notesTree.getLastSelectedPathComponent();
                 // get corresponding note
                 // and display the following details on the right:
                 //      associated code (highlighted code) at the top
@@ -91,7 +90,7 @@ public class ViewAllNotesDialog extends JDialog {
     }
 
     public JComponent getPreferredFocusedComponent() {
-        return this.NotesTree;
+        return this.notesTree;
     }
 
     public JComponent getPanel() {

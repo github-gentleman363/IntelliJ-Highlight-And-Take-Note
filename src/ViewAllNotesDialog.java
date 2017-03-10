@@ -6,9 +6,9 @@ import javax.swing.text.Document;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.*;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ViewAllNotesDialog extends JDialog {
     private JPanel contentPane;
@@ -44,23 +44,21 @@ public class ViewAllNotesDialog extends JDialog {
         NoteManager noteManager = NoteManager.getInstance();
         Map<String, List<Note>> filePathToNotes = noteManager.getFilePathToNotes();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
-        Iterator it = filePathToNotes.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            String filePath = (String) pair.getKey();
-            List<Note> notes = (List<Note>) pair.getValue();
+        Set<String> filePathSet = filePathToNotes.keySet();
+        for (String filePath : filePathSet) {
+            List<Note> notes = filePathToNotes.get(filePath);
             DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(filePath);
             root.add(parentNode);
 
-            for(Note note : notes){
+            for (Note note : notes) {
                 DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(note);
                 parentNode.add(childNode);
             }
-            it.remove(); // avoids a ConcurrentModificationException
         }
 
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
         this.NotesTree.setModel(treeModel);
+        this.NotesTree.setRootVisible(false);
         this.NotesTree.setCellRenderer(new NoteCellRenderer());
 
         // TODO refactor me!
@@ -72,6 +70,10 @@ public class ViewAllNotesDialog extends JDialog {
                 // and display the following details on the right:
                 //      associated code (highlighted code) at the top
                 //      note content at the bottom
+
+                if (selectedNode == null || !selectedNode.isLeaf()) {
+                    return;
+                }
 
                 Note currentNote = (Note) selectedNode.getUserObject();
                 codePane = new JTextPane();

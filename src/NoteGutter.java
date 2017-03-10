@@ -33,7 +33,8 @@ public class NoteGutter implements ActiveAnnotationGutter {
 
         NoteManager noteManager = NoteManager.getInstance();
         Note note = noteManager.getNote(filePath, line);
-        showComment = note.getContent();
+        if (note == null) { showComment = "Comment"; }
+        else { showComment = note.getContent(); }
         return showComment;
     }
 

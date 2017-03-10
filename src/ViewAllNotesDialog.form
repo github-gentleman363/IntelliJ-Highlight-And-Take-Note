@@ -38,6 +38,10 @@
               </grid>
             </constraints>
             <properties>
+              <background color="-14342617"/>
+              <editable value="false"/>
+              <foreground color="-1"/>
+              <margin top="10" left="10" bottom="10" right="10"/>
               <text value="Select a note to see the corresponding note content"/>
             </properties>
           </component>
@@ -48,6 +52,10 @@
               </grid>
             </constraints>
             <properties>
+              <background color="-14342617"/>
+              <editable value="false"/>
+              <foreground color="-1"/>
+              <margin top="10" left="10" bottom="10" right="10"/>
               <text value="Select a note to see the corresponding code"/>
             </properties>
             <clientProperties>

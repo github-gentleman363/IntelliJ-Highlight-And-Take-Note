@@ -51,9 +51,10 @@ public class NoteManager {
         return null;
     }
 
-    public Note editNote(int id, String content) {
+    public Note editNote(int id, String content, Color color) {
         Note note = this.getNote(id);
         note.setContent(content);
+        note.setColor(color);
         // TODO persist!
         return note;
     }

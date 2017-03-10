@@ -11,8 +11,6 @@ public class TakeNoteDialog extends JDialog {
     private JRadioButton blueButton;
     private ButtonGroup buttonGroup;
 
-    // TODO disallow multiple selection
-
     public TakeNoteDialog() {
         // TODO add selected text as props
         setContentPane(this.contentPane);
@@ -53,6 +51,18 @@ public class TakeNoteDialog extends JDialog {
             return Color.BLUE;
         } else {
             return null;
+        }
+    }
+
+    public void setColor(Color color) {
+        if (color == Color.RED) {
+            redButton.setSelected(true);
+        } else if (color == Color.YELLOW) {
+            yellowButton.setSelected(true);
+        } else if (color == Color.GREEN) {
+            greenButton.setSelected(true);
+        } else {
+            blueButton.setSelected(true);
         }
     }
 

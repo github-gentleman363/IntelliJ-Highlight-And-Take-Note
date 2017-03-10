@@ -67,6 +67,7 @@
         <properties>
           <font style="1"/>
           <foreground color="-4514537"/>
+          <selected value="true"/>
           <text value="Red"/>
         </properties>
       </component>

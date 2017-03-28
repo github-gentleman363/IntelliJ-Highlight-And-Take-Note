@@ -1,3 +1,5 @@
+package takenote;
+
 import javax.swing.*;
 import java.awt.*;
 

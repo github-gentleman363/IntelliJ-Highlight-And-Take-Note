@@ -1,3 +1,5 @@
+package takenote;
+
 import java.awt.*;
 
 public class Note {

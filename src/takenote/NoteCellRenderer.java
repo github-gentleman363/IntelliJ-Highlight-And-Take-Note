@@ -1,3 +1,5 @@
+package takenote;
+
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 

@@ -30,10 +30,10 @@
 
   <actions>
     <!-- Add your actions here -->
-    <action id="takeNoteId" class="TakeNoteAction" text="Take Note">
+    <action id="takeNoteId" class="takenote.TakeNoteAction" text="Take Note">
       <add-to-group group-id="EditorPopupMenu" anchor="first"/>
     </action>
-      <action id="viewAllNotes" class="ViewAllNotesAction" text="View All Notes">
+      <action id="viewAllNotes" class="takenote.ViewAllNotesAction" text="View All Notes">
           <add-to-group group-id="ToolsMenu" anchor="first"/>
       </action>
   </actions>

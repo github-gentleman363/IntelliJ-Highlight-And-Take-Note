@@ -1,11 +1,20 @@
 package takenote.persistence;
 
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
 import takenote.Note;
+import takenote.NoteManager;
 
 import java.util.HashMap;
 import java.util.List;
 
+@State(
+        name = "NotesPersistence",
+        storages = {
+            @Storage("take-notes.xml")
+        }
+)
 class NotesPersistentComp implements PersistentStateComponent<NotesPersistentComp.State> {
     static class State {
         public HashMap<String, List<Note>> getFilePathToNotes() {
@@ -16,17 +25,18 @@ class NotesPersistentComp implements PersistentStateComponent<NotesPersistentCom
             this.filePathToNotes = filePathToNotes;
         }
 
-        private HashMap<String, List<Note>> filePathToNotes;
+        public HashMap<String, List<Note>> filePathToNotes;
     }
 
-    private State myState;
+    private State state = new State();
 
     public State getState() {
-        return myState;
+        state.setFilePathToNotes(NoteManager.getInstance().getFilePathToNotes());
+        return state;
     }
 
     public void loadState(State state) {
-        myState = state;
+        this.state = state;
     }
 
 }

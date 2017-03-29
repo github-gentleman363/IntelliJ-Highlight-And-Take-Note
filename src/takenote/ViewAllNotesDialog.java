@@ -131,7 +131,7 @@ public class ViewAllNotesDialog extends JDialog {
     private void constructGroupByColorTree() {
         Map<Color, List<Note>> colorToNoteMap = new HashMap<Color, List<Note>>();
 
-        NoteManager noteManager = NoteManager.getInstance();
+        NoteManager noteManager = NoteManager.getInstance(this.project);
         Map<String, List<Note>> filePathToNotes = noteManager.getFilePathToNotes();
         Set<String> filePathSet = filePathToNotes.keySet();
         for (String filePath : filePathSet) {
@@ -165,7 +165,7 @@ public class ViewAllNotesDialog extends JDialog {
 
     private void constructGroupByFileTree() {
         // TODO rename me!
-        NoteManager noteManager = NoteManager.getInstance();
+        NoteManager noteManager = NoteManager.getInstance(this.project);
         Map<String, List<Note>> filePathToNotes = noteManager.getFilePathToNotes();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         Set<String> filePathSet = filePathToNotes.keySet();

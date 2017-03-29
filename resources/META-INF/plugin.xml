@@ -24,9 +24,17 @@
   <depends>com.intellij.modules.lang</depends>
   -->
 
+  <project-components>
+    <component>
+      <implementation-class>takenote.NoteManager</implementation-class>
+    </component>
+    <component>
+      <implementation-class>takenote.persistence.NotesPersistentStateComp</implementation-class>
+    </component>
+  </project-components>
+
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <projectService serviceInterface="takenote.persistence.NotesPersistentComp" serviceImplementation="takenote.persistence.NotesPersistentComp"/>
   </extensions>
 
   <actions>

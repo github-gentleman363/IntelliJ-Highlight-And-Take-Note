@@ -28,7 +28,7 @@ public class NoteGutter implements ActiveAnnotationGutter {
 
     public String getToolTip(int line, Editor editor) {
         if (this.hasNote(line)) {
-            NoteManager noteManager = NoteManager.getInstance();
+            NoteManager noteManager = NoteManager.getInstance(this.project);
             Document document = this.editor.getDocument();
             VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
             final String filePath = virtualFile.getPath();
@@ -49,7 +49,7 @@ public class NoteGutter implements ActiveAnnotationGutter {
 
     public Color getBgColor(int line, Editor editor) {
         if (this.hasNote(line)) {
-            NoteManager noteManager = NoteManager.getInstance();
+            NoteManager noteManager = NoteManager.getInstance(this.project);
             Document document = this.editor.getDocument();
             VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
             final String filePath = virtualFile.getPath();
@@ -75,7 +75,7 @@ public class NoteGutter implements ActiveAnnotationGutter {
         //          show the dialog with the note, and highlight the associated code? (have ViewAddedNoteAction entity to handle this)
         //      without a note: do nothing (for now)
         // System.out.println("Note Gutter Action triggered!");
-        NoteManager noteManager = NoteManager.getInstance();
+        NoteManager noteManager = NoteManager.getInstance(this.project);
 
         // TODO refactor
         Document document = this.editor.getDocument();
@@ -126,7 +126,7 @@ public class NoteGutter implements ActiveAnnotationGutter {
     }
 
     private boolean hasNote(int lineNum) {
-        NoteManager noteManager = NoteManager.getInstance();
+        NoteManager noteManager = NoteManager.getInstance(this.project);
         Document document = this.editor.getDocument();
         VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
         final String filePath = virtualFile.getPath();

@@ -1,21 +1,25 @@
 package takenote;
 
+import com.intellij.openapi.components.AbstractProjectComponent;
+import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class NoteManager {
-
-    private static final NoteManager INSTANCE = new NoteManager();
-
-    private NoteManager() {}
+public class NoteManager extends AbstractProjectComponent {
 
     private HashMap<String, List<Note>> filePathToNotes = new HashMap<String, List<Note>>();
     private HashMap<Integer, Note> noteIdToNote = new HashMap<Integer, Note>();
 
-    public static NoteManager getInstance() {
-        return INSTANCE;
+    protected NoteManager(Project project) {
+        super(project);
+    }
+
+    public static NoteManager getInstance(@NotNull Project project) {
+        return project.getComponent(NoteManager.class);
     }
 
     public Note addNewNote(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {

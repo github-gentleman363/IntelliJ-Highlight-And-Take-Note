@@ -53,7 +53,7 @@ public class TakeNoteAction extends AnAction {
         dialogWrapper.show();
 
         if (dialogWrapper.isOK()) {
-            NoteManager manager = NoteManager.getInstance();
+            NoteManager manager = NoteManager.getInstance(project);
             TakeNoteDialog takeNoteDialog = dialogWrapper.getTakeNoteDialog();
             String comment = takeNoteDialog.getText();
 

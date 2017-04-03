@@ -1,17 +1,19 @@
 package takenote.persistence;
 
-import takenote.Note;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class FilePathWithNotes {
 
     private String filePath;
-    private List<Note> notes;
+    private List<NoteBean> noteBeans = new ArrayList<>();
 
-    public FilePathWithNotes(String filePath, List<Note> notes) {
+    public FilePathWithNotes() {
+    }
+
+    public FilePathWithNotes(String filePath, List<NoteBean> notes) {
         this.filePath = filePath;
-        this.notes = notes;
+        this.noteBeans = notes;
     }
 
     public String getFilePath() {
@@ -22,11 +24,12 @@ public class FilePathWithNotes {
         this.filePath = filePath;
     }
 
-    public List<Note> getNotes() {
-        return notes;
+    public List<NoteBean> getNoteBeans() {
+        return noteBeans;
     }
 
-    public void setNotes(List<Note> notes) {
-        this.notes = notes;
+    public void setNoteBeans(List<NoteBean> noteBeans) {
+        this.noteBeans = noteBeans;
     }
+
 }

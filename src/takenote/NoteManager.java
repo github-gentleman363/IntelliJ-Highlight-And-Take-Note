@@ -1,8 +1,18 @@
 package takenote;
 
+import com.intellij.ide.startup.StartupManagerEx;
 import com.intellij.openapi.components.AbstractProjectComponent;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
+import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
+import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupManager;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import takenote.persistence.FilePathWithNotes;
+import takenote.persistence.NoteBean;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,12 +24,53 @@ public class NoteManager extends AbstractProjectComponent {
     private HashMap<String, List<Note>> filePathToNotes = new HashMap<String, List<Note>>();
     private HashMap<Integer, Note> noteIdToNote = new HashMap<Integer, Note>();
 
-    protected NoteManager(Project project) {
+    private final StartupManagerEx startupManager;
+
+    protected NoteManager(Project project, final StartupManager startupManager) {
         super(project);
+        this.startupManager = (StartupManagerEx)startupManager;
     }
 
     public static NoteManager getInstance(@NotNull Project project) {
         return project.getComponent(NoteManager.class);
+    }
+
+    public void loadFromState(List<FilePathWithNotes> filePathWithNotesList) {
+        final Runnable runnable = new DumbAwareRunnable() {
+            public void run() {
+                for (FilePathWithNotes filePathWithNotes : filePathWithNotesList) {
+
+                    // populate NoteManager
+                    filePathToNotes.put(filePathWithNotes.getFilePath(), new ArrayList<>());
+                    List<NoteBean> noteBeans = filePathWithNotes.getNoteBeans();
+                    for (NoteBean noteBean : noteBeans) {
+                        filePathToNotes.get(filePathWithNotes.getFilePath()).add(
+                                new Note(noteBean, filePathWithNotes.getFilePath()));
+                    }
+
+                    // register annotations
+                    final VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(
+                        filePathWithNotes.getFilePath());
+                    if (virtualFile == null) {
+                        return;
+                    }
+
+                    OpenFileDescriptor openFileDescriptor = new OpenFileDescriptor(myProject, virtualFile);
+                    final Editor editor = FileEditorManagerEx.getInstance(myProject).
+                            openTextEditor(openFileDescriptor, false);
+
+                    NoteGutter noteGutter = new NoteGutter(myProject, editor);
+                    editor.getGutter().registerTextAnnotation(noteGutter, noteGutter);
+
+                }
+            }
+        };
+
+        if (startupManager.startupActivityPassed()) {
+            runnable.run();
+        } else {
+            startupManager.registerPostStartupActivity(runnable);
+        }
     }
 
     public Note addNewNote(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {

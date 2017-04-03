@@ -36,20 +36,7 @@ public class NotesPersistentStateComp extends AbstractProjectComponent implement
     @Override
     public void loadState(NotesPersistentState state) {
         this.state = state;
-        this.convertFilePathWithNotes();
-    }
-
-    private void convertFilePathWithNotes() {
-        List<FilePathWithNotes> notes = state.getFilePathWithNotesList();
-        Map<String, List<Note>> filePathToNotes = NoteManager.getInstance(myProject).getFilePathToNotes();
-        for (FilePathWithNotes filePathWithNotes : notes) {
-            filePathToNotes.put(filePathWithNotes.getFilePath(), new ArrayList<>());
-            List<NoteBean> noteBeans = filePathWithNotes.getNoteBeans();
-            for (NoteBean noteBean : noteBeans) {
-                filePathToNotes.get(filePathWithNotes.getFilePath()).add(
-                        new Note(noteBean, filePathWithNotes.getFilePath()));
-            }
-        }
+        NoteManager.getInstance(myProject).loadFromState(state.getFilePathWithNotesList());
     }
 
     private List<FilePathWithNotes> convertFilePathToNotes() {

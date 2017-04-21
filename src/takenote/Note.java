@@ -3,12 +3,11 @@ package takenote;
 import takenote.persistence.NoteBean;
 
 import java.awt.*;
+import java.util.UUID;
 
 public class Note {
 
-    private static int nextId = 1;
-
-    private int id;
+    private String id;
     private int lineNumber;
     private int startOffset;
     private int endOffset;
@@ -47,7 +46,7 @@ public class Note {
         }
     }
 
-    public int getId() {
+    public String  getId() {
         return id;
     }
 
@@ -88,7 +87,7 @@ public class Note {
     }
 
     public Note(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {
-        this.id = Note.nextId++;
+        this.id = UUID.randomUUID().toString();
         this.lineNumber = lineNumber;
         this.startOffset = startOffset;
         this.endOffset = endOffset;

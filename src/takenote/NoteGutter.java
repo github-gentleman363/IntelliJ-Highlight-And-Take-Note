@@ -101,7 +101,7 @@ public class NoteGutter implements ActiveAnnotationGutter {
             if (dialogWrapper.isOK()) {
                 String newContent = takeNoteDialog.getText();
                 Color selectedColor = takeNoteDialog.getSelectedColor();
-                int noteId = note.getId();
+                String noteId = note.getId();
                 noteManager.editNote(noteId, newContent, selectedColor);
                 selectionModel.removeSelection();
             } else if (dialogWrapper.isDeleteNoteOnExit()) {

@@ -21,8 +21,8 @@ import java.util.List;
 
 public class NoteManager extends AbstractProjectComponent {
 
-    private HashMap<String, List<Note>> filePathToNotes = new HashMap<String, List<Note>>();
-    private HashMap<Integer, Note> noteIdToNote = new HashMap<Integer, Note>();
+    private HashMap<String, List<Note>> filePathToNotes = new HashMap<>();
+    private HashMap<String, Note> noteIdToNote = new HashMap<>();
 
     private final StartupManagerEx startupManager;
 
@@ -101,14 +101,14 @@ public class NoteManager extends AbstractProjectComponent {
         return null;
     }
 
-    public Note getNote(int id) {
+    public Note getNote(String id) {
         if (this.noteIdToNote.containsKey(id)) {
             return this.noteIdToNote.get(id);
         }
         return null;
     }
 
-    public Note editNote(int id, String content, Color color) {
+    public Note editNote(String id, String content, Color color) {
         Note note = this.getNote(id);
         note.setContent(content);
         note.setColor(color);

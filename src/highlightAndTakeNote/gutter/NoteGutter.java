@@ -1,4 +1,4 @@
-package takenote;
+package highlightAndTakeNote.gutter;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.editor.Document;
@@ -10,6 +10,10 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.actions.ActiveAnnotationGutter;
 import com.intellij.openapi.vfs.VirtualFile;
+import highlightAndTakeNote.model.Note;
+import highlightAndTakeNote.NoteManager;
+import highlightAndTakeNote.takeNote.TakeNoteDialog;
+import highlightAndTakeNote.takeNote.TakeNoteDialogWrapper;
 
 import java.awt.*;
 
@@ -26,46 +30,30 @@ public class NoteGutter implements ActiveAnnotationGutter {
         return " ";
     }
 
-    public String getToolTip(int line, Editor editor) {
-        if (this.hasNote(line)) {
-            NoteManager noteManager = NoteManager.getInstance(this.project);
-            Document document = this.editor.getDocument();
-            VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
-            final String filePath = virtualFile.getPath();
+    public String getToolTip(int lineNumber, Editor editor) {
+        Note note = this.getNote(lineNumber);
+        return note == null ? null : note.getContent();
 
-            Note note = noteManager.getNote(filePath, line);
-            return note.getContent();
-        }
-        else return null;
     }
 
     public EditorFontType getStyle(int line, Editor editor) {
-        return EditorFontType.BOLD;
+        return null;
     }
 
     public ColorKey getColor(int line, Editor editor) {
         return null;
     }
 
-    public Color getBgColor(int line, Editor editor) {
-        if (this.hasNote(line)) {
-            NoteManager noteManager = NoteManager.getInstance(this.project);
-            Document document = this.editor.getDocument();
-            VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
-            final String filePath = virtualFile.getPath();
-
-            Note note = noteManager.getNote(filePath, line);
-            return note.getColor();
-        }
-        else return null;
+    public Color getBgColor(int lineNumber, Editor editor) {
+        Note note = this.getNote(lineNumber);
+        return note == null ? null : note.getColor();
     }
 
     public java.util.List<AnAction> getPopupActions(int line, Editor editor) {
         return new java.util.ArrayList<AnAction>();
     }
 
-    public void gutterClosed() {
-    }
+    public void gutterClosed() {}
 
     public void doAction(int lineNum) {
         // FOR NOW:
@@ -77,35 +65,34 @@ public class NoteGutter implements ActiveAnnotationGutter {
         // System.out.println("Note Gutter Action triggered!");
         NoteManager noteManager = NoteManager.getInstance(this.project);
 
-        // TODO refactor
-        Document document = this.editor.getDocument();
-        VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
-        final String filePath = virtualFile.getPath();
+        Note note = this.getNote(lineNum);
 
-        Note note = noteManager.getNote(filePath, lineNum);
         if (note != null) {
             //  TODO handle if code in the editor in the range doesn't match what's in note
+
+            // TODO extract - selectLines()
             int startOffset = note.getStartOffset();
             int endOffset = note.getEndOffset();
             final SelectionModel selectionModel = editor.getSelectionModel();
             selectionModel.setSelection(startOffset, endOffset);
 
+            // TODO extract
             // set up dialog with note info + show
             TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project, false);
             dialogWrapper.setContent(note.getContent());
             TakeNoteDialog takeNoteDialog = dialogWrapper.getTakeNoteDialog();
             takeNoteDialog.setColor(note.getColor());
-
             dialogWrapper.show();
 
             if (dialogWrapper.isOK()) {
+                // TODO extract
                 String newContent = takeNoteDialog.getText();
                 Color selectedColor = takeNoteDialog.getSelectedColor();
                 String noteId = note.getId();
                 noteManager.editNote(noteId, newContent, selectedColor);
                 selectionModel.removeSelection();
             } else if (dialogWrapper.isDeleteNoteOnExit()) {
-                boolean deleted = noteManager.deleteNote(filePath, lineNum);
+                boolean deleted = noteManager.deleteNote(note.getFilePath(), lineNum);
                 if (deleted) {
                     editor.getGutter().closeAllAnnotations();
                     NoteGutter noteGutter = new NoteGutter(project, editor);
@@ -116,21 +103,17 @@ public class NoteGutter implements ActiveAnnotationGutter {
 
     }
 
-
-    // TODO
-    // hasNote isn't that useful since we need the Note object in DoAction
-    // try replacing it with 'getNote' instead?
-
     public Cursor getCursor(int lineNum) {
-        return this.hasNote(lineNum) ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) : null;
+        Note note = this.getNote(lineNum);
+        return note == null ? null : Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) ;
     }
 
-    private boolean hasNote(int lineNum) {
+    private Note getNote(int lineNum) {
         NoteManager noteManager = NoteManager.getInstance(this.project);
         Document document = this.editor.getDocument();
         VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
         final String filePath = virtualFile.getPath();
-        return noteManager.hasNoteInLine(filePath, lineNum);
+        return noteManager.getNote(filePath, lineNum);
     }
 
 }

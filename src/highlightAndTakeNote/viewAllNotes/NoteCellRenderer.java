@@ -1,7 +1,8 @@
-package takenote;
+package highlightAndTakeNote.viewAllNotes;
 
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
+import highlightAndTakeNote.model.Note;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -9,11 +10,13 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 
+// TODO group this file with ViewAllNotes* files.
+
 public class NoteCellRenderer implements TreeCellRenderer {
+
     private JLabel lineNumber = new JLabel();
     private JLabel noteContent = new JLabel();
     private JLabel filePath = new JLabel();
-
     private JPanel panel = new JPanel();
 
     private DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
@@ -24,6 +27,7 @@ public class NoteCellRenderer implements TreeCellRenderer {
     private boolean includeFilePath;
 
     public NoteCellRenderer(boolean includeFilePath) {
+        // configure panel
 
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -43,6 +47,7 @@ public class NoteCellRenderer implements TreeCellRenderer {
         noteContent.setVerticalTextPosition(JLabel.CENTER);
         noteContent.setVerticalAlignment(JLabel.CENTER);
 
+        // set background colors
         backgroundSelectionColor = defaultRenderer.getBackgroundSelectionColor();
         backgroundNonSelectionColor = defaultRenderer.getBackgroundNonSelectionColor();
 
@@ -55,18 +60,21 @@ public class NoteCellRenderer implements TreeCellRenderer {
             Object userObject = ((DefaultMutableTreeNode) value).getUserObject(); // TODO pass in Note object
             if (userObject instanceof Note) {
                 Note note = (Note) userObject;
+
                 if (includeFilePath) {
                     String[] chars = note.getFilePath().split("/");
                     filePath.setText(chars[chars.length-1]);
                 }
                 lineNumber.setText(((Integer) note.getLineNumber()).toString());
                 noteContent.setText(note.getContent());
+
                 if (selected) {
                     panel.setBackground(backgroundSelectionColor);
                 } else {
                     panel.setBackground(backgroundNonSelectionColor);
                 }
                 panel.setEnabled(tree.isEnabled());
+
                 rendererComponent = panel;
             }
         }

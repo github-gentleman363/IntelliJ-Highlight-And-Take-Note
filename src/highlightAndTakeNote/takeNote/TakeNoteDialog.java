@@ -1,4 +1,4 @@
-package takenote;
+package highlightAndTakeNote.takeNote;
 
 import javax.swing.*;
 import java.awt.*;

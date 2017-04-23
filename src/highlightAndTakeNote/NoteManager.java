@@ -1,4 +1,4 @@
-package takenote;
+package highlightAndTakeNote;
 
 import com.intellij.ide.startup.StartupManagerEx;
 import com.intellij.openapi.components.AbstractProjectComponent;
@@ -10,9 +10,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import highlightAndTakeNote.gutter.NoteGutter;
+import highlightAndTakeNote.model.Note;
 import org.jetbrains.annotations.NotNull;
-import takenote.persistence.FilePathWithNotes;
-import takenote.persistence.NoteBean;
+import highlightAndTakeNote.persistence.FilePathWithNotes;
+import highlightAndTakeNote.persistence.NoteBean;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -49,6 +51,7 @@ public class NoteManager extends AbstractProjectComponent {
                     }
 
                     // register annotations
+
                     final VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(
                         filePathWithNotes.getFilePath());
                     if (virtualFile == null) {
@@ -74,7 +77,7 @@ public class NoteManager extends AbstractProjectComponent {
     }
 
     public Note addNewNote(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {
-        // TODO PERSIST! + re-eval return type
+        // TODO rename to createNote
         Note currentNote = new Note(startOffset, endOffset, lineNumber, content, filePath, highlightedCode, color);
 
         this.noteIdToNote.put(currentNote.getId(), currentNote);
@@ -86,6 +89,7 @@ public class NoteManager extends AbstractProjectComponent {
     }
 
     public boolean hasNoteInLine(String filePath, int lineNum) {
+        // TODO rename to hasNoteAt
         return this.getNote(filePath, lineNum) != null;
     }
 
@@ -102,6 +106,7 @@ public class NoteManager extends AbstractProjectComponent {
     }
 
     public Note getNote(String id) {
+        // TODO rename to getNoteById
         if (this.noteIdToNote.containsKey(id)) {
             return this.noteIdToNote.get(id);
         }
@@ -112,7 +117,6 @@ public class NoteManager extends AbstractProjectComponent {
         Note note = this.getNote(id);
         note.setContent(content);
         note.setColor(color);
-        // TODO persist!
         return note;
     }
 

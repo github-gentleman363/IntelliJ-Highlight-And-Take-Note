@@ -26,10 +26,10 @@
 
   <project-components>
     <component>
-      <implementation-class>takenote.NoteManager</implementation-class>
+      <implementation-class>highlightAndTakeNote.NoteManager</implementation-class>
     </component>
     <component>
-      <implementation-class>takenote.persistence.NotesPersistentStateComp</implementation-class>
+      <implementation-class>highlightAndTakeNote.persistence.NotesPersistentStateComp</implementation-class>
     </component>
   </project-components>
 
@@ -39,10 +39,10 @@
 
   <actions>
     <!-- Add your actions here -->
-    <action id="takeNoteId" class="takenote.TakeNoteAction" text="Take Note">
+    <action id="takeNoteId" class="highlightAndTakeNote.takeNote.TakeNoteAction" text="Take Note">
       <add-to-group group-id="EditorPopupMenu" anchor="first"/>
     </action>
-      <action id="viewAllNotes" class="takenote.ViewAllNotesAction" text="View All Notes">
+      <action id="viewAllNotes" class="highlightAndTakeNote.viewAllNotes.ViewAllNotesAction" text="View All Notes">
           <add-to-group group-id="ToolsMenu" anchor="first"/>
       </action>
   </actions>

@@ -1,4 +1,4 @@
-package takenote;
+package highlightAndTakeNote.viewAllNotes;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

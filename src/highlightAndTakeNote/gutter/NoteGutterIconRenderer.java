@@ -1,4 +1,4 @@
-package takenote.gutter;
+package highlightAndTakeNote.gutter;
 
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.util.IconLoader;
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class NoteGutterIconRenderer extends GutterIconRenderer {
-    private final Icon icon = IconLoader.getIcon("/takenote/images/note.png");
+    private final Icon icon = IconLoader.getIcon("/highlightAndTakeNote/images/note.png");
 
 
     @NotNull

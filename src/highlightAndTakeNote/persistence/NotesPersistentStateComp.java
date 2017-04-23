@@ -1,12 +1,12 @@
-package takenote.persistence;
+package highlightAndTakeNote.persistence;
 
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
-import takenote.Note;
-import takenote.NoteManager;
+import highlightAndTakeNote.model.Note;
+import highlightAndTakeNote.NoteManager;
 
 import java.util.ArrayList;
 import java.util.List;

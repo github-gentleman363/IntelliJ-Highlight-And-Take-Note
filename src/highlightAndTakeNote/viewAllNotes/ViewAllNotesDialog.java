@@ -1,10 +1,12 @@
-package takenote;
+package highlightAndTakeNote.viewAllNotes;
 
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import highlightAndTakeNote.model.Note;
+import highlightAndTakeNote.NoteManager;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

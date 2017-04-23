@@ -1,6 +1,6 @@
-package takenote.persistence;
+package highlightAndTakeNote.persistence;
 
-import takenote.Note;
+import highlightAndTakeNote.model.Note;
 
 import java.awt.*;
 

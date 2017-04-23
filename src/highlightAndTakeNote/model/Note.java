@@ -1,6 +1,6 @@
-package takenote;
+package highlightAndTakeNote.model;
 
-import takenote.persistence.NoteBean;
+import highlightAndTakeNote.persistence.NoteBean;
 
 import java.awt.*;
 import java.util.UUID;
@@ -16,7 +16,17 @@ public class Note {
     private String filePath;
     private Color color;
 
-    public Note() {
+    public Note() {}
+
+    public Note(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {
+        this.id = UUID.randomUUID().toString();
+        this.lineNumber = lineNumber;
+        this.startOffset = startOffset;
+        this.endOffset = endOffset;
+        this.highlightedCode = highlightedCode;
+        this.content = content;
+        this.filePath = filePath;
+        this.color = color;
     }
 
     public Note(NoteBean noteBean, String filePath) {
@@ -46,7 +56,7 @@ public class Note {
         }
     }
 
-    public String  getId() {
+    public String getId() {
         return id;
     }
 
@@ -86,14 +96,4 @@ public class Note {
         this.color = color;
     }
 
-    public Note(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {
-        this.id = UUID.randomUUID().toString();
-        this.lineNumber = lineNumber;
-        this.startOffset = startOffset;
-        this.endOffset = endOffset;
-        this.highlightedCode = highlightedCode;
-        this.content = content;
-        this.filePath = filePath;
-        this.color = color;
-    }
 }

@@ -1,4 +1,4 @@
-package takenote;
+package highlightAndTakeNote.takeNote;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class TakeNoteDialogWrapper extends DialogWrapper {
+
     private TakeNoteDialog takeNoteDialog;
 
     private static final int DELETE_NOTE_EXIT_CODE = NEXT_USER_EXIT_CODE;
@@ -57,6 +58,8 @@ public class TakeNoteDialogWrapper extends DialogWrapper {
         return new Action[]{getOKAction(), new DeleteNoteAction(), getHelpAction()};
     }
 
+
+    // TODO define this at the very top or bottom
     protected class DeleteNoteAction extends DialogWrapperAction {
         private DeleteNoteAction() {
             super("Delete Note");

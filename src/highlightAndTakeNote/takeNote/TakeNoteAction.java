@@ -1,4 +1,4 @@
-package takenote;
+package highlightAndTakeNote.takeNote;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -7,9 +7,10 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.messages.MessageBus;
+import highlightAndTakeNote.gutter.NoteGutter;
+import highlightAndTakeNote.NoteManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -18,24 +19,39 @@ public class TakeNoteAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
+        /**
+         *
+         * 1) getNoteLocation | getNoteContext
+         * 2) showTakeNoteDialog
+         * 3) addNote
+         * [4) open gutter for icon/annotation display - should be moved out eventually]
+         *
+         */
         final Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
         final Project project = e.getRequiredData(CommonDataKeys.PROJECT);
 
+        // TODO move this elsewhere + rename
         this.subscribeRegisterNotesOnFileOpened(project);
 
         final SelectionModel selectionModel = editor.getSelectionModel();
+
+        // TODO for the next two blocks, extract them to a function
+        //  such as getNoteLocation / getNoteContext
+
+        // TODO extract to a function
         final int startOffset = selectionModel.getSelectionStart();
         final int endOffset = selectionModel.getSelectionEnd();
         if (selectionModel.getSelectionStartPosition() == null) return;
         final int lineNumber = selectionModel.getSelectionStartPosition().getLine();
         final String code = selectionModel.getSelectedText();
 
+        // TODO extract to a function - getCurrentFilePath or something
         final VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(editor.getDocument());
         if (virtualFile == null) return;
-
         final String filePath = virtualFile.getPath();
         // TODO: use the code below if we want path to be relative to base directory
         // final String filePath = VfsUtil.getRelativeLocation(virtualFile, project.getBaseDir());
+
 
         // TODO set position & size
         TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project, true);
@@ -65,9 +81,6 @@ public class TakeNoteAction extends AnAction {
             highlighter.setGutterIconRenderer(gutterIconRenderer);
             */
 
-            // TODO fix duplicate annotation
-            // TODO display color / icon next to where note is taken
-            //      AND add action logic
             if (manager.hasAnyNoteInFile(filePath)) {
                 editor.getGutter().closeAllAnnotations();
             }

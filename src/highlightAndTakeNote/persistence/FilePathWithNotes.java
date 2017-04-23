@@ -1,4 +1,4 @@
-package takenote.persistence;
+package highlightAndTakeNote.persistence;
 
 import java.util.ArrayList;
 import java.util.List;

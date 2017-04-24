@@ -10,8 +10,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 
-// TODO group this file with ViewAllNotes* files.
-
 public class NoteCellRenderer implements TreeCellRenderer {
 
     private JLabel lineNumber = new JLabel();
@@ -57,7 +55,7 @@ public class NoteCellRenderer implements TreeCellRenderer {
                                                   boolean expanded, boolean leaf, int row, boolean hasFocus) {
         Component rendererComponent = null;
         if ((value != null) && (value instanceof DefaultMutableTreeNode)) {
-            Object userObject = ((DefaultMutableTreeNode) value).getUserObject(); // TODO pass in Note object
+            Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
             if (userObject instanceof Note) {
                 Note note = (Note) userObject;
 

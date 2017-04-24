@@ -20,6 +20,7 @@ public class TakeNoteDialogWrapper extends DialogWrapper {
         this.takeNoteDialog = new TakeNoteDialog();
         this.isAddMode = isAddMode;
         this.setTitle(this.isAddMode ? "Add Note" : "View / Edit Note");
+
         this.init();
         // TODO disable submit button if no text is inputted
         //        this.setOKActionEnabled(false);
@@ -58,19 +59,6 @@ public class TakeNoteDialogWrapper extends DialogWrapper {
         return new Action[]{getOKAction(), new DeleteNoteAction(), getHelpAction()};
     }
 
-
-    // TODO define this at the very top or bottom
-    protected class DeleteNoteAction extends DialogWrapperAction {
-        private DeleteNoteAction() {
-            super("Delete Note");
-        }
-
-        @Override
-        protected void doAction(ActionEvent e) {
-            close(DELETE_NOTE_EXIT_CODE);
-        }
-    }
-
     public boolean isDeleteNoteOnExit() {
         return getExitCode() == DELETE_NOTE_EXIT_CODE;
     }
@@ -81,6 +69,17 @@ public class TakeNoteDialogWrapper extends DialogWrapper {
 
     public void setContent(String content) {
         this.takeNoteDialog.setText(content);
+    }
+
+    protected class DeleteNoteAction extends DialogWrapperAction {
+        private DeleteNoteAction() {
+            super("Delete Note");
+        }
+
+        @Override
+        protected void doAction(ActionEvent e) {
+            close(DELETE_NOTE_EXIT_CODE);
+        }
     }
 
 }

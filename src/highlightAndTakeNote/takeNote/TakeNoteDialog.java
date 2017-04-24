@@ -14,7 +14,6 @@ public class TakeNoteDialog extends JDialog {
     private ButtonGroup buttonGroup;
 
     public TakeNoteDialog() {
-        // TODO add selected text as props
         setContentPane(this.contentPane);
         setModal(true);
 
@@ -34,7 +33,6 @@ public class TakeNoteDialog extends JDialog {
     }
 
     public String getText() {
-        // TODO rename
         return this.textArea.getText();
     }
 
@@ -43,6 +41,7 @@ public class TakeNoteDialog extends JDialog {
     }
 
     public Color getSelectedColor() {
+        // TODO get the selected button from button group
         if (redButton.isSelected()) {
             return Color.RED;
         } else if (yellowButton.isSelected()) {

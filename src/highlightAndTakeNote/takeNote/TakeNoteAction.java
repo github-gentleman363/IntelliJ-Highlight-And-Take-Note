@@ -19,33 +19,22 @@ public class TakeNoteAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        /**
-         *
-         * 1) getNoteLocation | getNoteContext
-         * 2) showTakeNoteDialog
-         * 3) addNote
-         * [4) open gutter for icon/annotation display - should be moved out eventually]
-         *
-         */
+
         final Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
         final Project project = e.getRequiredData(CommonDataKeys.PROJECT);
 
         // TODO move this elsewhere + rename
         this.subscribeRegisterNotesOnFileOpened(project);
 
+        // Get highlighted code and its location in file
         final SelectionModel selectionModel = editor.getSelectionModel();
-
-        // TODO for the next two blocks, extract them to a function
-        //  such as getNoteLocation / getNoteContext
-
-        // TODO extract to a function
         final int startOffset = selectionModel.getSelectionStart();
         final int endOffset = selectionModel.getSelectionEnd();
         if (selectionModel.getSelectionStartPosition() == null) return;
         final int lineNumber = selectionModel.getSelectionStartPosition().getLine();
         final String code = selectionModel.getSelectedText();
 
-        // TODO extract to a function - getCurrentFilePath or something
+        // Get name of the file being noted
         final VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(editor.getDocument());
         if (virtualFile == null) return;
         final String filePath = virtualFile.getPath();
@@ -53,15 +42,14 @@ public class TakeNoteAction extends AnAction {
         // final String filePath = VfsUtil.getRelativeLocation(virtualFile, project.getBaseDir());
 
 
-        // TODO set position & size
         TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project, true);
         dialogWrapper.show();
 
         if (dialogWrapper.isOK()) {
             NoteManager manager = NoteManager.getInstance(project);
             TakeNoteDialog takeNoteDialog = dialogWrapper.getTakeNoteDialog();
-            String comment = takeNoteDialog.getText();
 
+            String comment = takeNoteDialog.getText();
             Color color = takeNoteDialog.getSelectedColor();
 
             manager.addNewNote(startOffset, endOffset, lineNumber, comment, filePath, code, color);
@@ -81,6 +69,16 @@ public class TakeNoteAction extends AnAction {
             highlighter.setGutterIconRenderer(gutterIconRenderer);
             */
 
+            /**
+             * TODO Redesign the logic of showing notes in the gutter.
+             *
+             * Currently adding a note opens up a new annotation gutter.
+             *  So, we are closing existing annotation gutters so we don't have
+             *    duplicate annotations showing these notes.
+             *
+             *  However, this is a problem since this closes all annotations as
+             *      user may want to retain annotation associated with a different plugin.
+             */
             if (manager.hasAnyNoteInFile(filePath)) {
                 editor.getGutter().closeAllAnnotations();
             }

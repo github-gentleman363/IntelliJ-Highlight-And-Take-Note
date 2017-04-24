@@ -44,25 +44,8 @@ public class ViewAllNotesDialog extends JDialog {
         setContentPane(contentPane);
         setModal(true);
 
-//        getRootPane().setDefaultButton(buttonOK);
-
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
-        this.constructTrees();
-
+        // Add event listeners
+        this.registerCancelEvents();
         this.groupByFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -70,7 +53,6 @@ public class ViewAllNotesDialog extends JDialog {
                 notesTree.setModel(noteTreeByFileModel);
             }
         });
-
         this.groupByColorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -78,8 +60,24 @@ public class ViewAllNotesDialog extends JDialog {
                 notesTree.setModel(noteTreeByColorModel);
             }
         });
-
         this.registerMouseEvent();
+
+        this.constructTrees();
+    }
+
+    private void registerCancelEvents() {
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                onCancel();
+            }
+        });
+
+        contentPane.registerKeyboardAction(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     private void registerMouseEvent() {
@@ -150,9 +148,7 @@ public class ViewAllNotesDialog extends JDialog {
         Set<Color> colorSet = colorToNoteMap.keySet();
         for (Color color : colorSet) {
             List<Note> notes = colorToNoteMap.get(color);
-            DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(
-                    COLORS.get(color)
-            );
+            DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(COLORS.get(color));
             root.add(parentNode);
 
             for (Note note : notes) {
@@ -166,7 +162,6 @@ public class ViewAllNotesDialog extends JDialog {
     }
 
     private void constructGroupByFileTree() {
-        // TODO rename me!
         NoteManager noteManager = NoteManager.getInstance(this.project);
         Map<String, List<Note>> filePathToNotes = noteManager.getFilePathToNotes();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
@@ -197,12 +192,10 @@ public class ViewAllNotesDialog extends JDialog {
     }
 
     private void onOK() {
-        // add your code here
         dispose();
     }
 
     private void onCancel() {
-        // add your code here if necessary
         dispose();
     }
 

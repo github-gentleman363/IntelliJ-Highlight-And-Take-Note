@@ -14,6 +14,7 @@ import highlightAndTakeNote.model.Note;
 import highlightAndTakeNote.NoteManager;
 import highlightAndTakeNote.takeNote.TakeNoteDialog;
 import highlightAndTakeNote.takeNote.TakeNoteDialogWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
@@ -33,7 +34,6 @@ public class NoteGutter implements ActiveAnnotationGutter {
     public String getToolTip(int lineNumber, Editor editor) {
         Note note = this.getNote(lineNumber);
         return note == null ? null : note.getContent();
-
     }
 
     public EditorFontType getStyle(int line, Editor editor) {
@@ -68,24 +68,16 @@ public class NoteGutter implements ActiveAnnotationGutter {
         Note note = this.getNote(lineNum);
 
         if (note != null) {
-            //  TODO handle if code in the editor in the range doesn't match what's in note
+            // TODO handle if code in the editor in the range doesn't match what's in note
 
-            // TODO extract - selectLines()
-            int startOffset = note.getStartOffset();
-            int endOffset = note.getEndOffset();
             final SelectionModel selectionModel = editor.getSelectionModel();
-            selectionModel.setSelection(startOffset, endOffset);
+            highlightNotedLines(note, selectionModel);
 
-            // TODO extract
-            // set up dialog with note info + show
-            TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project, false);
-            dialogWrapper.setContent(note.getContent());
-            TakeNoteDialog takeNoteDialog = dialogWrapper.getTakeNoteDialog();
-            takeNoteDialog.setColor(note.getColor());
+            TakeNoteDialogWrapper dialogWrapper = setupTakeNoteDialog(note);
             dialogWrapper.show();
 
             if (dialogWrapper.isOK()) {
-                // TODO extract
+                TakeNoteDialog takeNoteDialog = dialogWrapper.getTakeNoteDialog();
                 String newContent = takeNoteDialog.getText();
                 Color selectedColor = takeNoteDialog.getSelectedColor();
                 String noteId = note.getId();
@@ -101,6 +93,21 @@ public class NoteGutter implements ActiveAnnotationGutter {
             }
         }
 
+    }
+
+    @NotNull
+    private TakeNoteDialogWrapper setupTakeNoteDialog(Note note) {
+        TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project, false);
+        dialogWrapper.setContent(note.getContent());
+        TakeNoteDialog takeNoteDialog = dialogWrapper.getTakeNoteDialog();
+        takeNoteDialog.setColor(note.getColor());
+        return dialogWrapper;
+    }
+
+    private void highlightNotedLines(Note note, SelectionModel selectionModel) {
+        int startOffset = note.getStartOffset();
+        int endOffset = note.getEndOffset();
+        selectionModel.setSelection(startOffset, endOffset);
     }
 
     public Cursor getCursor(int lineNum) {

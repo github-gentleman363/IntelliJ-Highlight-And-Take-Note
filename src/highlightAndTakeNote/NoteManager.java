@@ -77,7 +77,6 @@ public class NoteManager extends AbstractProjectComponent {
     }
 
     public Note addNewNote(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {
-        // TODO rename to createNote
         Note currentNote = new Note(startOffset, endOffset, lineNumber, content, filePath, highlightedCode, color);
 
         this.noteIdToNote.put(currentNote.getId(), currentNote);
@@ -86,11 +85,6 @@ public class NoteManager extends AbstractProjectComponent {
         }
         this.filePathToNotes.get(filePath).add(currentNote);
         return currentNote;
-    }
-
-    public boolean hasNoteInLine(String filePath, int lineNum) {
-        // TODO rename to hasNoteAt
-        return this.getNote(filePath, lineNum) != null;
     }
 
     public Note getNote(String filePath, int lineNum) {
@@ -106,7 +100,6 @@ public class NoteManager extends AbstractProjectComponent {
     }
 
     public Note getNote(String id) {
-        // TODO rename to getNoteById
         if (this.noteIdToNote.containsKey(id)) {
             return this.noteIdToNote.get(id);
         }

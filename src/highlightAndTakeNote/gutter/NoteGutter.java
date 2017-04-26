@@ -1,126 +1,69 @@
 package highlightAndTakeNote.gutter;
 
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.SelectionModel;
-import com.intellij.openapi.editor.colors.ColorKey;
-import com.intellij.openapi.editor.colors.EditorFontType;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.editor.ex.MarkupModelEx;
+import com.intellij.openapi.editor.markup.HighlighterLayer;
+import com.intellij.openapi.editor.markup.RangeHighlighter;
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
+import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vcs.actions.ActiveAnnotationGutter;
-import com.intellij.openapi.vfs.VirtualFile;
 import highlightAndTakeNote.model.Note;
-import highlightAndTakeNote.NoteManager;
-import highlightAndTakeNote.takeNote.TakeNoteDialog;
-import highlightAndTakeNote.takeNote.TakeNoteDialogWrapper;
-import org.jetbrains.annotations.NotNull;
+import highlightAndTakeNote.util.Util;
 
-import java.awt.*;
+public class NoteGutter {
 
-public class NoteGutter implements ActiveAnnotationGutter {
-    private final Project project;
-    private final Editor editor;
+    private final Note note;
+    private RangeHighlighter highlighter = null;
 
-    public NoteGutter(Project project, Editor editor) {
-        this.project = project;
-        this.editor = editor;
+    public NoteGutter(Note note) {
+        this.note = note;
     }
 
-    public String getLineText(int line, Editor editor) {
-        return " ";
+    public Note getNote() {
+        return note;
     }
 
-    public String getToolTip(int lineNumber, Editor editor) {
-        Note note = this.getNote(lineNumber);
-        return note == null ? null : note.getContent();
+    public RangeHighlighter getHighlighter() {
+        return highlighter;
     }
 
-    public EditorFontType getStyle(int line, Editor editor) {
-        return null;
-    }
-
-    public ColorKey getColor(int line, Editor editor) {
-        return null;
-    }
-
-    public Color getBgColor(int lineNumber, Editor editor) {
-        Note note = this.getNote(lineNumber);
-        return note == null ? null : note.getColor();
-    }
-
-    public java.util.List<AnAction> getPopupActions(int line, Editor editor) {
-        return new java.util.ArrayList<AnAction>();
-    }
-
-    public void gutterClosed() {}
-
-    public void doAction(int lineNum) {
-        // FOR NOW:
-        //  this can only be available if user has clicked to add a note
-        //  so user clicked at a line:
-        //      with a note:
-        //          show the dialog with the note, and highlight the associated code? (have ViewAddedNoteAction entity to handle this)
-        //      without a note: do nothing (for now)
-        // System.out.println("Note Gutter Action triggered!");
-        NoteManager noteManager = NoteManager.getInstance(this.project);
-
-        Note note = this.getNote(lineNum);
-
-        if (note != null) {
-            // TODO handle if code in the editor in the range doesn't match what's in note
-
-            final SelectionModel selectionModel = editor.getSelectionModel();
-            highlightNotedLines(note, selectionModel);
-
-            TakeNoteDialogWrapper dialogWrapper = setupTakeNoteDialog(note);
-            dialogWrapper.show();
-
-            if (dialogWrapper.isOK()) {
-                TakeNoteDialog takeNoteDialog = dialogWrapper.getTakeNoteDialog();
-                String newContent = takeNoteDialog.getText();
-                Color selectedColor = takeNoteDialog.getSelectedColor();
-                String noteId = note.getId();
-                noteManager.editNote(noteId, newContent, selectedColor);
-                selectionModel.removeSelection();
-            } else if (dialogWrapper.isDeleteNoteOnExit()) {
-                boolean deleted = noteManager.deleteNote(note.getFilePath(), lineNum);
-                if (deleted) {
-                    editor.getGutter().closeAllAnnotations();
-                    NoteGutter noteGutter = new NoteGutter(project, editor);
-                    editor.getGutter().registerTextAnnotation(noteGutter, noteGutter);
-                }
-            }
+    public void update() {
+        final Project project = this.note.getProject();
+        if (project == null) {
+            return;
         }
 
-    }
+        final Util util = Util.getInstance(project);
+        final Document document = util.getDocument(this.note.getFilePath());
+        if (document == null) {
+            return;
+        }
 
-    @NotNull
-    private TakeNoteDialogWrapper setupTakeNoteDialog(Note note) {
-        TakeNoteDialogWrapper dialogWrapper = new TakeNoteDialogWrapper(project, false);
-        dialogWrapper.setContent(note.getContent());
-        TakeNoteDialog takeNoteDialog = dialogWrapper.getTakeNoteDialog();
-        takeNoteDialog.setColor(note.getColor());
-        return dialogWrapper;
-    }
+        if (this.highlighter == null) {
 
-    private void highlightNotedLines(Note note, SelectionModel selectionModel) {
-        int startOffset = note.getStartOffset();
-        int endOffset = note.getEndOffset();
-        selectionModel.setSelection(startOffset, endOffset);
-    }
+            OpenFileDescriptor openFileDescriptor = util.getOpenFileDescriptor(
+                    this.note.getFilePath(), this.note.getStartOffset());
+            if (openFileDescriptor == null) {
+                return;
+            }
 
-    public Cursor getCursor(int lineNum) {
-        Note note = this.getNote(lineNum);
-        return note == null ? null : Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) ;
-    }
+            final Editor editor = FileEditorManagerEx.getInstance(project).openTextEditor(openFileDescriptor, true);
+            if (editor == null) {
+                return;
+            }
 
-    private Note getNote(int lineNum) {
-        NoteManager noteManager = NoteManager.getInstance(this.project);
-        Document document = this.editor.getDocument();
-        VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(document);
-        final String filePath = virtualFile.getPath();
-        return noteManager.getNote(filePath, lineNum);
+            MarkupModelEx markup = (MarkupModelEx)editor.getMarkupModel();
+            // TODO: Figure out what "HighlighterLayer.ERROR + 1" means
+            this.highlighter = markup.addPersistentLineHighlighter(this.note.getLineNumber(), HighlighterLayer.ERROR + 1,
+                    null);
+            if (this.highlighter == null) {
+                return;
+            }
+
+            NoteGutterIconRenderer noteGutterIconRenderer = new NoteGutterIconRenderer(this);
+            highlighter.setGutterIconRenderer(noteGutterIconRenderer);
+        }
     }
 
 }

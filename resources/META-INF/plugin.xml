@@ -31,6 +31,12 @@
     <component>
       <implementation-class>highlightAndTakeNote.persistence.NotesPersistentStateComp</implementation-class>
     </component>
+    <component>
+      <implementation-class>highlightAndTakeNote.util.Util</implementation-class>
+    </component>
+    <component>
+      <implementation-class>highlightAndTakeNote.gutter.NoteGutterManager</implementation-class>
+    </component>
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">

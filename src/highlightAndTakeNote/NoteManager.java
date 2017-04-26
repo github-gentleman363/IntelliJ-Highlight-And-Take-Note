@@ -2,19 +2,14 @@ package highlightAndTakeNote;
 
 import com.intellij.ide.startup.StartupManagerEx;
 import com.intellij.openapi.components.AbstractProjectComponent;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.OpenFileDescriptor;
-import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
 import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import highlightAndTakeNote.gutter.NoteGutter;
+import highlightAndTakeNote.gutter.NoteGutterManager;
 import highlightAndTakeNote.model.Note;
-import org.jetbrains.annotations.NotNull;
 import highlightAndTakeNote.persistence.FilePathWithNotes;
 import highlightAndTakeNote.persistence.NoteBean;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -46,25 +41,11 @@ public class NoteManager extends AbstractProjectComponent {
                     filePathToNotes.put(filePathWithNotes.getFilePath(), new ArrayList<>());
                     List<NoteBean> noteBeans = filePathWithNotes.getNoteBeans();
                     for (NoteBean noteBean : noteBeans) {
-                        filePathToNotes.get(filePathWithNotes.getFilePath()).add(
-                                new Note(noteBean, filePathWithNotes.getFilePath()));
+                        Note note = new Note(noteBean, myProject, filePathWithNotes.getFilePath());
+                        noteIdToNote.put(note.getId(), note);
+                        filePathToNotes.get(filePathWithNotes.getFilePath()).add(note);
+                        NoteGutterManager.getInstance(myProject).updateNoteGutter(note, false);
                     }
-
-                    // register annotations
-
-                    final VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(
-                        filePathWithNotes.getFilePath());
-                    if (virtualFile == null) {
-                        return;
-                    }
-
-                    OpenFileDescriptor openFileDescriptor = new OpenFileDescriptor(myProject, virtualFile);
-                    final Editor editor = FileEditorManagerEx.getInstance(myProject).
-                            openTextEditor(openFileDescriptor, false);
-
-                    NoteGutter noteGutter = new NoteGutter(myProject, editor);
-                    editor.getGutter().registerTextAnnotation(noteGutter, noteGutter);
-
                 }
             }
         };
@@ -76,8 +57,11 @@ public class NoteManager extends AbstractProjectComponent {
         }
     }
 
-    public Note addNewNote(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {
-        Note currentNote = new Note(startOffset, endOffset, lineNumber, content, filePath, highlightedCode, color);
+    public Note addNewNote(Project project, int startOffset, int endOffset, int lineNumber, String content,
+                           String filePath, String highlightedCode, Color color) {
+
+        Note currentNote = new Note(project, startOffset, endOffset, lineNumber, content,
+                filePath, highlightedCode, color);
 
         this.noteIdToNote.put(currentNote.getId(), currentNote);
         if (!this.filePathToNotes.containsKey(filePath)) {
@@ -106,11 +90,15 @@ public class NoteManager extends AbstractProjectComponent {
         return null;
     }
 
-    public Note editNote(String id, String content, Color color) {
+    public boolean editNote(String id, String content, Color color) {
         Note note = this.getNote(id);
+        if (note == null) {
+            return false;
+        }
+
         note.setContent(content);
         note.setColor(color);
-        return note;
+        return true;
     }
 
     public HashMap<String, List<Note>> getFilePathToNotes() {
@@ -123,18 +111,26 @@ public class NoteManager extends AbstractProjectComponent {
                 && this.filePathToNotes.get(filePath).size() > 0;
     }
 
-    public boolean deleteNote(String filePath, int lineNum) {
+    public boolean deleteNote(String noteId) {
+        Note note = this.getNote(noteId);
+        if (note == null) {
+            return false;
+        }
+
+        String filePath = note.getFilePath();
         Note noteToRemove = null;
         if (this.hasAnyNoteInFile(filePath)) {
             List<Note> listOfNotes = this.getFilePathToNotes().get(filePath);
-            for (Note note : listOfNotes) {
-                if (note.getLineNumber() == lineNum) {
-                    noteToRemove = note;
+            for (Note eachNote : listOfNotes) {
+                if (eachNote.getId().equals(noteId)) {
+                    noteToRemove = eachNote;
                     break;
                 }
             }
             if (noteToRemove != null) {
+                this.noteIdToNote.remove(noteId);
                 this.getFilePathToNotes().get(filePath).remove(noteToRemove);
+                return true;
             }
         }
         return false;

@@ -3,10 +3,9 @@ package highlightAndTakeNote.viewAllNotes;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import highlightAndTakeNote.model.Note;
 import highlightAndTakeNote.NoteManager;
+import highlightAndTakeNote.model.Note;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -168,10 +167,7 @@ public class ViewAllNotesDialog extends JDialog {
         Set<String> filePathSet = filePathToNotes.keySet();
         for (String filePath : filePathSet) {
             List<Note> notes = filePathToNotes.get(filePath);
-            DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(
-                    VfsUtil.getRelativeLocation(LocalFileSystem.getInstance().findFileByPath(filePath),
-                            project.getBaseDir())
-            );
+            DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(filePath);
             root.add(parentNode);
 
             for (Note note : notes) {

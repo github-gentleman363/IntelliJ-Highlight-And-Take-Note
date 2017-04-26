@@ -60,8 +60,7 @@ public class NoteCellRenderer implements TreeCellRenderer {
                 Note note = (Note) userObject;
 
                 if (includeFilePath) {
-                    String[] chars = note.getFilePath().split("/");
-                    filePath.setText(chars[chars.length-1]);
+                    filePath.setText(note.getFilePath());
                 }
                 lineNumber.setText(((Integer) note.getLineNumber()).toString());
                 noteContent.setText(note.getContent());

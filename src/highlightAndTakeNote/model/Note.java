@@ -1,5 +1,6 @@
 package highlightAndTakeNote.model;
 
+import com.intellij.openapi.project.Project;
 import highlightAndTakeNote.persistence.NoteBean;
 
 import java.awt.*;
@@ -8,6 +9,8 @@ import java.util.UUID;
 public class Note {
 
     private String id;
+    private Project project;
+
     private int lineNumber;
     private int startOffset;
     private int endOffset;
@@ -18,8 +21,11 @@ public class Note {
 
     public Note() {}
 
-    public Note(int startOffset, int endOffset, int lineNumber, String content, String filePath, String highlightedCode, Color color) {
+    public Note(Project project, int startOffset, int endOffset, int lineNumber, String content, String filePath,
+                String highlightedCode, Color color) {
+
         this.id = UUID.randomUUID().toString();
+        this.project = project;
         this.lineNumber = lineNumber;
         this.startOffset = startOffset;
         this.endOffset = endOffset;
@@ -29,13 +35,15 @@ public class Note {
         this.color = color;
     }
 
-    public Note(NoteBean noteBean, String filePath) {
+    public Note(NoteBean noteBean, Project project, String filePath) {
         this.id = noteBean.getId();
         this.lineNumber = noteBean.getLineNumber();
         this.startOffset = noteBean.getStartOffset();
         this.endOffset = noteBean.getEndOffset();
         this.highlightedCode = noteBean.getHighlightedCode();
         this.content = noteBean.getContent();
+
+        this.project = project;
         this.filePath = filePath;
         this.mapColor(noteBean.getColor());
     }
@@ -58,6 +66,10 @@ public class Note {
 
     public String getId() {
         return id;
+    }
+
+    public Project getProject() {
+        return project;
     }
 
     public int getLineNumber() {

@@ -5,6 +5,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class TakeNoteDialogWrapper extends DialogWrapper {
@@ -69,6 +70,10 @@ public class TakeNoteDialogWrapper extends DialogWrapper {
 
     public void setContent(String content) {
         this.takeNoteDialog.setText(content);
+    }
+
+    public void setColor(Color color) {
+        this.takeNoteDialog.setColor(color);
     }
 
     protected class DeleteNoteAction extends DialogWrapperAction {

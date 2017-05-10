@@ -2,10 +2,17 @@ package highlightAndTakeNote.viewAllNotes;
 
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Splitter;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import highlightAndTakeNote.NoteManager;
-import highlightAndTakeNote.model.Note;
+
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.PsiManagerImpl;
+import com.intellij.ui.IdeBorderFactory;
+import com.intellij.usageView.UsageInfo;
+import com.intellij.usages.UsageViewPresentation;
+import com.intellij.usages.impl.UsagePreviewPanel;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -15,19 +22,30 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
+import highlightAndTakeNote.model.Note;
+import highlightAndTakeNote.NoteManager;
+/**
+ *  TODO
+ *
+ *  Style
+ *  - Have 'By File' radio selected initially  >>> DONE
+ *  - Take out the root >>> DONE
+ *  - 'By Color': folder -> color icon?
+ *  - 'By File': folder -> file icon
+ *  - Have the folders expand to show lines
+ *  - extra spacing between find by group button panel and the splitter
+ *  - Change colors to be softer. Hard to read on most colors.
+ *  - Center the dialog
+ *  - Fix width + height
+ *
+ *  Additional Feature
+ *  -  Free text search of note
+ */
 
 public class ViewAllNotesDialog extends JDialog {
-    private JPanel contentPane;
-    private JTree notesTree;
-    private JTextPane codePane;
-    private JTextPane notePane;
-    private JRadioButton groupByFileButton;
-    private JRadioButton groupByColorButton;
 
-    private Project project;
-    private DefaultTreeModel noteTreeByFileModel;
-    private DefaultTreeModel noteTreeByColorModel;
-
+    private static final int WIDTH = 300;
+    private static final int HEIGHT = 300;
     private static final HashMap<Color, String> COLORS = createColorMap();
     private static HashMap<Color, String> createColorMap() {
         HashMap<Color, String> colorMap = new HashMap<Color, String>();
@@ -38,13 +56,34 @@ public class ViewAllNotesDialog extends JDialog {
         return colorMap;
     }
 
+    private Project project;
+    private JPanel contentPane;
+
+    private JRadioButton groupByFileButton;
+    private JRadioButton groupByColorButton;
+
+    private Splitter myPreviewSplitter;
+    private Splitter notesTreeAndPreviewSplitter;
+    private JTree notesTree;
+    private JTextPane notePreview;
+    private UsagePreviewPanel notedCodePreview;
+
+    private DefaultTreeModel noteTreeByFileModel;
+    private DefaultTreeModel noteTreeByColorModel;
+
     public ViewAllNotesDialog(Project project) {
         this.project = project;
-        setContentPane(contentPane);
         setModal(true);
+        this.createLayout();
 
-        // Add event listeners
         this.registerCancelEvents();
+        this.registerListenersToButtons();
+        this.registerMouseEvent();
+
+        this.constructTrees();
+    }
+
+    public void registerListenersToButtons() {
         this.groupByFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -59,9 +98,63 @@ public class ViewAllNotesDialog extends JDialog {
                 notesTree.setModel(noteTreeByColorModel);
             }
         });
-        this.registerMouseEvent();
+    }
 
-        this.constructTrees();
+    public void createLayout(JComponent... arg) {
+        this.setSize(ViewAllNotesDialog.WIDTH, ViewAllNotesDialog.HEIGHT);
+
+        JPanel groupByButtonsPanel = setupGroupNotesButton();
+        // TODO rename
+        setupNotesTreeAndNotePreview();
+        setupNotesAndCodePreview();
+
+        contentPane = new JPanel(new BorderLayout());
+        contentPane.add(groupByButtonsPanel, BorderLayout.PAGE_START);
+        contentPane.add(myPreviewSplitter, BorderLayout.CENTER);
+
+        setContentPane(contentPane);
+    }
+
+    private void setupNotesAndCodePreview() {
+        notedCodePreview = new UsagePreviewPanel(project, new UsageViewPresentation(), true);
+        notedCodePreview.setBorder(IdeBorderFactory.createBorder());
+        // TODO rename
+        myPreviewSplitter = new Splitter(true, 0.5f, 0.1f, 0.9f);
+        myPreviewSplitter.setFirstComponent(notesTreeAndPreviewSplitter);
+        myPreviewSplitter.setSecondComponent(notedCodePreview.createComponent());
+    }
+
+    private void setupNotesTreeAndNotePreview() {
+        notesTree = new JTree();
+        notesTree.setRootVisible(false);
+        notePreview = new JTextPane();
+        notesTreeAndPreviewSplitter = new Splitter(false, 0.5f, 0.1f, 0.9f);
+        notesTreeAndPreviewSplitter.setFirstComponent(notesTree);
+        notesTreeAndPreviewSplitter.setSecondComponent(notePreview);
+    }
+
+    @NotNull
+    private JPanel setupGroupNotesButton() {
+        ButtonGroup buttonGroup = new ButtonGroup();
+        // TODO localize strings
+        groupByFileButton = new JRadioButton("Find By File");
+        groupByColorButton = new JRadioButton("Find By Note Color");
+        buttonGroup.add(groupByFileButton);
+        buttonGroup.add(groupByColorButton);
+        buttonGroup.setSelected(groupByFileButton.getModel(), true);
+
+        JPanel groupByButtonsPanel = new JPanel();
+        GroupLayout groupLayout = new GroupLayout(groupByButtonsPanel);
+        groupByButtonsPanel.setLayout(groupLayout);
+        groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
+            .addComponent(groupByFileButton)
+                .addComponent(groupByColorButton)
+        );
+        groupLayout.setVerticalGroup(groupLayout.createParallelGroup()
+            .addComponent(groupByFileButton)
+                .addComponent(groupByColorButton)
+        );
+        return groupByButtonsPanel;
     }
 
     private void registerCancelEvents() {
@@ -79,22 +172,22 @@ public class ViewAllNotesDialog extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
+
     private void registerMouseEvent() {
         MouseListener ml = new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                int selRow = notesTree.getRowForLocation(e.getX(), e.getY());
-                if (selRow != -1) {
                     DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) notesTree.getLastSelectedPathComponent();
                     if (selectedNode == null || !selectedNode.isLeaf()) {
                         return;
                     }
 
                     Note currentNote = (Note) selectedNode.getUserObject();
-                    notePane.setBackground(currentNote.getColor());
+
+                    notePreview.setBackground(currentNote.getColor());
                     if(currentNote.getColor() == Color.YELLOW){
-                        notePane.setForeground(Color.BLACK);
+                        notePreview.setForeground(Color.BLACK);
                     } else {
-                        notePane.setForeground(Color.WHITE);
+                        notePreview.setForeground(Color.WHITE);
                     }
 
                     if (e.getClickCount() == 1) {
@@ -102,9 +195,19 @@ public class ViewAllNotesDialog extends JDialog {
                             public void run() {
                                 // Runs inside of the Swing UI thread
                                 SwingUtilities.invokeLater(new Runnable() {
+                                    private void setCodePreview(String filePath, int startOffset, int endOffset) {
+                                        VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(filePath);
+                                        PsiFile file = PsiManagerImpl.getInstance(project).findFile(virtualFile);
+
+                                        UsageInfo usageInfo = new UsageInfo(file, startOffset, endOffset);
+                                        List<UsageInfo> usageInfos = new ArrayList<UsageInfo>();
+                                        usageInfos.add(usageInfo);
+
+                                        notedCodePreview.updateLayout(usageInfos);
+                                    }
                                     public void run() {
-                                        codePane.setText(currentNote.getHighlightedCode());
-                                        notePane.setText(currentNote.getContent());
+                                        this.setCodePreview(currentNote.getFilePath(), currentNote.getStartOffset(), currentNote.getEndOffset());
+                                        notePreview.setText(currentNote.getContent());
                                     }
                                 });
                             }
@@ -115,7 +218,6 @@ public class ViewAllNotesDialog extends JDialog {
                         new OpenFileDescriptor(project, file, currentNote.getStartOffset()).navigate(true);
                     }
                 }
-            }
         };
         this.notesTree.addMouseListener(ml);
     }

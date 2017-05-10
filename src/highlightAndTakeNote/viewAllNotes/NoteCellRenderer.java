@@ -9,8 +9,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
+import java.net.URL;
 
-public class NoteCellRenderer implements TreeCellRenderer {
+public class NoteCellRenderer extends DefaultTreeCellRenderer {
+    private static String IMAGE_PATH = "/images/very-basic-file-icon.png";
 
     private JLabel lineNumber = new JLabel();
     private JLabel noteContent = new JLabel();
@@ -25,7 +27,15 @@ public class NoteCellRenderer implements TreeCellRenderer {
     private boolean includeFilePath;
 
     public NoteCellRenderer(boolean includeFilePath) {
-        // configure panel
+        // TODO fix
+        URL imageURL = getClass().getResource(NoteCellRenderer.IMAGE_PATH);
+        if (imageURL != null) {
+            ImageIcon imageIcon = new ImageIcon(imageURL, "");
+            setIcon(imageIcon);
+            setClosedIcon(imageIcon);
+            setOpenIcon(imageIcon);
+            setLeafIcon(imageIcon);
+        }
 
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

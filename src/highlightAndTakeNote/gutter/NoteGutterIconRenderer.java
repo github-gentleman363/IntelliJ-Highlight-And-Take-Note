@@ -50,7 +50,7 @@ public class NoteGutterIconRenderer extends GutterIconRenderer {
     @NotNull
     @Override
     public Icon getIcon() {
-        this.icon = IconLoader.getIcon(colorToImagePathMap.get(this.noteGutter.getNote().getColor()));
+        this.icon = IconLoader.getIcon(colorToImagePathMap.get(this.getNote().getColor()));
         return icon;
     }
 
@@ -74,13 +74,12 @@ public class NoteGutterIconRenderer extends GutterIconRenderer {
 
     @Override
     public String getTooltipText() {
-        // TODO: fix this chaining call
-        return this.noteGutter.getNote().getContent();
+        return this.getNote().getContent();
     }
 
     @Override
     public AnAction getClickAction() {
-        Note note = this.noteGutter.getNote();
+        Note note = this.getNote();
 
         // TODO: extract this class into a separate file
         return new AnAction() {
@@ -137,6 +136,10 @@ public class NoteGutterIconRenderer extends GutterIconRenderer {
             }
 
         };
+    }
+
+    private Note getNote() {
+        return this.noteGutter.getNote();
     }
 
 }

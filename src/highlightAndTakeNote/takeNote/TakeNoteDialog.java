@@ -32,6 +32,8 @@ public class TakeNoteDialog extends JDialog {
         return this.contentPane;
     }
 
+    public JTextArea getTextArea() { return this.textArea; }
+
     public String getText() {
         return this.textArea.getText();
     }

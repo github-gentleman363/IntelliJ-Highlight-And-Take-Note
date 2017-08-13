@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class TakeNoteDialogWrapper extends DialogWrapper {
 
@@ -23,16 +25,17 @@ public class TakeNoteDialogWrapper extends DialogWrapper {
         this.setTitle(this.isAddMode ? "Add Note" : "View / Edit Note");
 
         this.init();
-        // TODO disable submit button if no text is inputted
-        //        this.setOKActionEnabled(false);
-        //        this.takeNoteDialog.setKeyListener(new KeyAdapter() {
-        //            @Override
-        //            public void keyReleased(KeyEvent e) {
-        //                setOKActionEnabled(!"".equals(((JTextField)e.getComponent()).getText()));
-        //            }
-        //        });
+
+        this.takeNoteDialog.getTextArea().addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+                JTextArea textArea = (JTextArea) e.getSource();
+                setOKActionEnabled(!"".equals(textArea.getText()));
+            }
+        });
+
         if (this.isAddMode) {
             this.getButton(this.getCancelAction()).setVisible(false);
+            this.setOKActionEnabled(false);
         }
         this.setOKButtonText("Save");
     }

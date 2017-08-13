@@ -54,7 +54,9 @@ public class NoteGutter {
             }
 
             MarkupModelEx markup = (MarkupModelEx)editor.getMarkupModel();
-            // TODO: Figure out what "HighlighterLayer.ERROR + 1" means
+
+            // https://android.googlesource.com/platform/tools/idea/+/snapshot-master/platform/editor-ui-ex/src/com/intellij/openapi/editor/ex/MarkupModelEx.java
+            // According to the above link, the second parameter is 'layer' but I don't know what it means.
             this.highlighter = markup.addPersistentLineHighlighter(this.note.getLineNumber(), HighlighterLayer.ERROR + 1,
                     null);
             if (this.highlighter == null) {

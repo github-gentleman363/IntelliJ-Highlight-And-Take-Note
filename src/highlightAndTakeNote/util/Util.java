@@ -27,12 +27,12 @@ public class Util extends AbstractProjectComponent implements DumbAware {
         return FileDocumentManager.getInstance().getDocument(file);
     }
 
-    public VirtualFile getVirtualFile(String filePath) {
+    public VirtualFile getVirtualFile(String relFilePath) {
         VirtualFile baseDir = myProject.getBaseDir();
         if (baseDir == null) {
             return null;
         }
-        return baseDir.findFileByRelativePath(filePath);
+        return baseDir.findFileByRelativePath(relFilePath);
     }
 
     public OpenFileDescriptor getOpenFileDescriptor(String filePath, int offset) {

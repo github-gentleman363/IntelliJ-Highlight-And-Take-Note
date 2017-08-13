@@ -12,6 +12,7 @@ import com.intellij.ui.IdeBorderFactory;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usages.UsageViewPresentation;
 import com.intellij.usages.impl.UsagePreviewPanel;
+import highlightAndTakeNote.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -196,7 +197,7 @@ public class ViewAllNotesDialog extends JDialog {
                                 // Runs inside of the Swing UI thread
                                 SwingUtilities.invokeLater(new Runnable() {
                                     private void setCodePreview(String filePath, int startOffset, int endOffset) {
-                                        VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(filePath);
+                                        VirtualFile virtualFile = Util.getInstance(project).getVirtualFile(filePath);
                                         PsiFile file = PsiManagerImpl.getInstance(project).findFile(virtualFile);
 
                                         UsageInfo usageInfo = new UsageInfo(file, startOffset, endOffset);

@@ -43,7 +43,8 @@ public class TakeNoteDialog extends JDialog {
     }
 
     public Color getSelectedColor() {
-        // TODO get the selected button from button group
+        // Iterating through radio buttons to find out which one is selected is not a bad approach:
+        // https://stackoverflow.com/questions/201287/how-do-i-get-which-jradiobutton-is-selected-from-a-buttongroup
         if (redButton.isSelected()) {
             return Color.RED;
         } else if (yellowButton.isSelected()) {

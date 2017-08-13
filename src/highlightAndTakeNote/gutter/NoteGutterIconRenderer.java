@@ -16,13 +16,32 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NoteGutterIconRenderer extends GutterIconRenderer {
 
-    private final NoteGutter noteGutter;
+    private static final String IMAGE_PATH = "/highlightAndTakeNote/images/";
 
-    // TODO: Should use different icon depending on selected color
-    private final Icon icon = IconLoader.getIcon("/highlightAndTakeNote/images/note.png");
+    private static final String RED_ICON_PATH = NoteGutterIconRenderer.IMAGE_PATH + "icons8-Comments-red.png";
+    private static final String GREEN_ICON_PATH = NoteGutterIconRenderer.IMAGE_PATH + "icons8-Comments-green.png";
+    private static final String BLUE_ICON_PATH = NoteGutterIconRenderer.IMAGE_PATH + "icons8-Comments-blue.png";
+    private static final String YELLOW_ICON_PATH = NoteGutterIconRenderer.IMAGE_PATH + "icons8-Comments-yellow.png";
+
+    // https://stackoverflow.com/questions/6802483/how-to-directly-initialize-a-hashmap-in-a-literal-way
+    private static final Map<Color, String> colorToImagePathMap = createColorToImagePathMap();
+    private static Map<Color, String> createColorToImagePathMap() {
+        Map<Color,String> colorToImagePathMap = new HashMap<Color, String>();
+        colorToImagePathMap.put(Color.RED, RED_ICON_PATH);
+        colorToImagePathMap.put(Color.GREEN, GREEN_ICON_PATH);
+        colorToImagePathMap.put(Color.BLUE, BLUE_ICON_PATH);
+        colorToImagePathMap.put(Color.YELLOW, YELLOW_ICON_PATH);
+        return colorToImagePathMap;
+    }
+
+    private NoteGutter noteGutter;
+
+    private Icon icon;
 
     public NoteGutterIconRenderer(NoteGutter noteGutter) {
         this.noteGutter = noteGutter;
@@ -31,6 +50,7 @@ public class NoteGutterIconRenderer extends GutterIconRenderer {
     @NotNull
     @Override
     public Icon getIcon() {
+        this.icon = IconLoader.getIcon(colorToImagePathMap.get(this.noteGutter.getNote().getColor()));
         return icon;
     }
 
@@ -39,7 +59,7 @@ public class NoteGutterIconRenderer extends GutterIconRenderer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NoteGutterIconRenderer that = (NoteGutterIconRenderer) o;
-        return icon.equals(that.getIcon());
+        return getIcon().equals(that.getIcon());
     }
 
     @Override
